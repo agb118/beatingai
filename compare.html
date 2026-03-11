@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Crimson+Pro:ital,wght@0,300;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<title>beatingai — Compare (Preview)</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --black:#060608;--white:#eeebe4;--green:#00e87a;
+  --red:#ff3c3c;--mid:#111115;--dim:#1e1e24;
+  --muted:#666672;--border:rgba(255,255,255,0.07);
+  --card-dark:#0d0d10;
+}
+body{background:var(--black);color:var(--white);font-family:'Crimson Pro',serif;overflow-x:hidden;}
+
+/* NAV */
+nav{display:flex;justify-content:space-between;align-items:center;padding:1.2rem 3rem;background:rgba(6,6,8,.95);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;letter-spacing:-.03em;}
+.nav-logo span{color:var(--green);}
+.nav-back{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.1em;color:var(--muted);text-decoration:none;border:1px solid var(--border);padding:.5rem 1rem;transition:color .2s,border-color .2s;}
+.nav-back:hover{color:var(--green);border-color:var(--green);}
+
+/* PAGE */
+.page{max-width:1100px;margin:0 auto;padding:5rem 2rem 6rem;}
+.eyebrow{font-family:'Space Mono',monospace;font-size:.63rem;letter-spacing:.22em;text-transform:uppercase;color:var(--green);display:flex;align-items:center;gap:.8rem;margin-bottom:1.2rem;}
+.eyebrow::before{content:'';width:20px;height:1px;background:var(--green);}
+.page-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.2rem,4vw,3.8rem);line-height:1;letter-spacing:-.03em;margin-bottom:1rem;}
+.page-title em{font-family:'Crimson Pro',serif;font-style:italic;font-weight:300;color:var(--red);}
+.page-sub{font-size:1.1rem;color:var(--muted);line-height:1.8;max-width:580px;margin-bottom:3.5rem;}
+
+/* PRODUCT SELECTOR TABS */
+.product-tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2.5rem;}
+.ptab{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;padding:.6rem 1.1rem;background:none;border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all .2s;}
+.ptab.active{background:var(--green);color:var(--black);border-color:var(--green);font-weight:700;}
+
+/* COMPARISON TABLE */
+.compare-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;min-width:640px;}
+
+/* Column headers */
+thead tr th{padding:1.2rem 1.4rem;text-align:left;font-weight:normal;border-bottom:1px solid var(--border);}
+.th-feature{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);width:30%;}
+.th-theirs{font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;color:var(--muted);width:35%;text-align:center;}
+.th-theirs span{display:block;font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.1em;color:#333;margin-top:.3rem;text-transform:uppercase;font-weight:400;}
+.th-ours{font-family:'Syne',sans-serif;font-weight:800;font-size:.95rem;color:var(--green);width:35%;text-align:center;position:relative;}
+.th-ours::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--green);}
+.th-ours span{display:block;font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.1em;color:rgba(0,232,122,.5);margin-top:.3rem;text-transform:uppercase;font-weight:400;}
+
+/* Rows */
+tbody tr{border-bottom:1px solid var(--border);transition:background .15s;}
+tbody tr:hover{background:rgba(255,255,255,.02);}
+tbody tr:last-child{border-bottom:none;}
+
+td{padding:1.1rem 1.4rem;vertical-align:middle;}
+
+.td-feature{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--white);line-height:1.5;}
+.td-feature small{display:block;color:var(--muted);font-size:.58rem;margin-top:.25rem;line-height:1.5;}
+
+/* Their value */
+.td-theirs{text-align:center;}
+.val-bad{font-family:'Space Mono',monospace;font-size:.7rem;color:#444;}
+.val-warn{font-family:'Space Mono',monospace;font-size:.7rem;color:#ff9500;}
+.x-icon{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:rgba(255,60,60,.1);color:var(--red);font-size:.9rem;}
+.warn-icon{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:rgba(255,149,0,.1);color:#ff9500;font-size:.9rem;}
+
+/* Our value */
+.td-ours{text-align:center;background:rgba(0,232,122,.03);}
+.val-good{font-family:'Space Mono',monospace;font-size:.7rem;color:var(--green);}
+.check-icon{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:rgba(0,232,122,.12);color:var(--green);font-size:.9rem;}
+
+/* WHY WE WIN row */
+.win-row td{padding:1rem 1.4rem;background:rgba(0,232,122,.04);border-top:1px solid rgba(0,232,122,.12);border-bottom:1px solid rgba(0,232,122,.12);}
+.win-label{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.12em;color:var(--green);text-transform:uppercase;margin-bottom:.35rem;}
+.win-text{font-family:'Space Mono',monospace;font-size:.62rem;color:rgba(238,235,228,.65);line-height:1.65;}
+
+/* VERDICT */
+.verdict{margin-top:2.5rem;background:var(--card-dark);border:1px solid rgba(0,232,122,.15);padding:2rem 2.5rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;}
+.verdict-text{flex:1;}
+.verdict-eyebrow{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.15em;color:var(--green);margin-bottom:.5rem;text-transform:uppercase;}
+.verdict-title{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:var(--white);margin-bottom:.5rem;}
+.verdict-sub{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);line-height:1.7;}
+.verdict-btn{background:var(--green);color:var(--black);font-family:'Space Mono',monospace;font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.9rem 2rem;text-decoration:none;white-space:nowrap;flex-shrink:0;}
+
+/* DISCLAIMER */
+.disclaimer{margin-top:1.5rem;font-family:'Space Mono',monospace;font-size:.55rem;color:#333;line-height:1.7;padding:1rem 1.4rem;border-left:2px solid var(--dim);}
+
+/* PREVIEW BADGE */
+.preview-bar{background:rgba(0,232,122,.08);border-bottom:1px solid rgba(0,232,122,.15);padding:.7rem 3rem;font-family:'Space Mono',monospace;font-size:.58rem;color:var(--green);letter-spacing:.1em;text-align:center;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">beating<span>ai</span></div>
+  <a href="./index.html" class="nav-back">← Back to Website</a>
+</nav>
+
+<div class="page">
+
+  <div class="eyebrow">Why beatingai</div>
+  <h1 class="page-title">Our picks vs<br/><em>other alternatives</em></h1>
+  <p class="page-sub">Generic privacy products flood Amazon and eBay. Most are untested, unverified, and bought in bulk for pennies. Here is why the brands we recommend are genuinely different.</p>
+
+  <!-- PRODUCT SELECTOR -->
+  <div class="product-tabs">
+    <button class="ptab active" onclick="show('faraday')">Faraday Bag</button>
+    <button class="ptab" onclick="show('glasses')">Anti-FR Glasses</button>
+    <button class="ptab" onclick="show('drive')">Encrypted Drive</button>
+    <button class="ptab" onclick="show('blocker')">Smart Home Blocker</button>
+    <button class="ptab" onclick="show('wallet')">RFID Wallet</button>
+    <button class="ptab" onclick="show('yubico')">Security Key</button>
+  </div>
+
+  <!-- FARADAY BAG -->
+  <div class="compare-wrap" id="tbl-faraday">
+    <table>
+      <thead><tr>
+        <th class="th-feature">Feature</th>
+        <th class="th-theirs">Generic Amazon Bag<span>Unbranded / $8–15</span></th>
+        <th class="th-ours">Silent Pocket<span>beatingai recommended</span></th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td class="td-feature">Signal blocking<small>Does it actually block all signals?</small></td>
+          <td class="td-theirs"><span class="x-icon">✕</span><br/><span class="val-bad">Unverified claims only</span></td>
+          <td class="td-ours"><span class="check-icon">✓</span><br/><span class="val-good">Independent lab tested</span></td>
+        </tr>
+        <tr>
+          <td class="td-feature">Frequencies covered<small>GPS, 5G, WiFi, Bluetooth, RFID</small></td>
+          <td class="td-theirs"><span class="warn-icon">!</span><br/><span class="val-warn">Often only blocks 3G/4G</span></td>
+          <td class="td-ours"><span class="check-icon">✓</span><br/><span class="val-good">All frequencies including 5G</span></td>
+        </tr>
+        <tr>
+          <td class="td-feature">Build quality<small>Seals, stitching, material durability</small></td>
+          <td class="td-theirs"><span class="x-icon">✕</span><br/><span class="val-bad">Thin material, weak seals</span></td>
+          <td class="td-ours"><span class="check-icon">✓</span><br/><span class="val-good">Military-spec materials</span></td>
+        </tr>
+        <tr>
+          <td class="td-feature">Verified results<small>Can you prove it works?</small></td>
+          <td class="td-theirs"><span class="x-icon">✕</span><br/><span class="val-bad">No test data provided</span></td>
+          <td class="td-ours"><span class="check-icon">✓</span><br/><span class="val-good">Published attenuation data</span></td>
+        </tr>
+        <tr>
+          <td class="td-feature">Price</td>
+          <td class="td-theirs"><span class="val-warn">$8–15</span></td>
+          <td class="td-ours"><span class="val-good">~$40–60</span></td>
+        </tr>
+        <tr class="win-row">
+          <td colspan="3">
+            <div class="win-label">Why it matters</div>
+            <div class="win-text">A Faraday bag that does not fully block signals is worse than no bag at all — it gives you false confidence while your phone continues transmitting. Silent Pocket publishes independent lab attenuation results. Cheap bags do not, because they cannot.</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ANTI-FR GLASSES -->
+  <div class="compare-wrap" id="tbl-glasses" style="display:none">
+    <table>
+      <thead><tr>
+        <th class="th-feature">Feature</th>
+        <th class="th-theirs">Generic IR Glasses<span>Unbranded / $10–20</span></th>
+        <th class="th-ours">Reflectacles<span>beatingai recommended</span></th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td class="td-feature">IR output verified<small>Tested against actual AI cameras?</small></td>
+          <td class="td-theirs"><span class="x-icon">✕</span><br/><span class="val-bad">No testing data</span></td>
+          <td class="td-ours"><span class="check-icon">✓</span><br/><span class="val-good">Tested against live AI systems</span></td>
+        </tr>
+        <tr>
+          <td class="td-feature">Appearance<small>Do they look like normal glasses?</small></td>
+          <td class="td-theirs"><span class="x-icon">✕</span><br/><span class="val-bad">Visibly unusual, draws attention</span></td>
+          <td class="td-ours"><span class="check-icon">✓</span><br/><span class="val-good">Indistinguishable from regular frames</span></td>
+        </tr>
+        <tr>
+          <td class="td-feature">Camera types defeated<small>CCTV, phone cameras, AI systems</small></td>
+          <td class="td-theirs"><span class="warn-icon">!</span><br/><span class="val-warn">Inconsistent results</span></td>
+          <td class="td-ours"><span class="check-icon">✓</span><br/><span class="val-good">Defeats multiple camera types</span></td>
+        </tr>
+        <tr>
+          <td class="td-feature">Patent protection<small>Genuine proprietary technology</small></td>
+          <td class="td-theirs"><span class="x-icon">✕</span><br/><span class="val-bad">Copies of copies</span></td>
+          <td class="td-ours"><span class="check-icon">✓</span><br/><span class="val-good">Patented IR technology</span></td>
+        </tr>
+        <tr>
+          <td class="td-feature">Price</td>
+          <td class="td-theirs"><span class="val-warn">$10–20</span></td>
+          <td class="td-ours"><span class="val-good">$65–130</span></td>
+        </tr>
+        <tr class="win-row">
+          <td colspan="3">
+            <div class="win-label">Why it matters</div>
+            <div class="win-text">Cheap IR glasses are copies of copies — no one tested whether the IR output matches what real AI facial recognition systems are sensitive to. Reflectacles was built specifically for this problem and has published testing results to prove it works.</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ENCRYPTED DRIVE -->
+  <div class="compare-wrap" id="tbl-drive" style="display:none">
+    <table>
+      <thead><tr>
+        <th class="th-feature">Feature</th>
+        <th class="th-theirs">Generic Encrypted USB<span>Unbranded / $15–30</span></th>
+        <th class="th-ours">Apricorn<span>beatingai recommended</span></th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td class="td-feature">Encryption type<small>How the data is actually protected</small></td>
+          <td class="td-theirs"><span class="x-icon">✕</span><br/><span class="val-bad">Software encryption only</span></td>
+          <td class="td-ours"><span class="check-icon">✓</span><br/><span class="val-good">AES 256-bit hardware encryption</span></td>
+        </tr>
+        <tr>
+          <td class="td-feature">Brute force protection<small>What happens after wrong PIN attempts</small></td>
+          <td class="td-theirs"><span class="x-icon">✕</span><br/><span class="val-bad">None — unlimited attempts</span></td>
+          <td class="td-ours"><span class="check-icon">✓</span><br/><span class="val-good">Auto-wipes after failed attempts</span></td>
+        </tr>
+        <tr>
+          <td class="td-feature">Driver requirement<small>Does it need software to work?</small></td>
+          <td class="td-theirs"><span class="warn-icon">!</span><br/><span class="val-warn">Often requires drivers or software</span></td>
+          <td class="td-ours"><span class="check-icon">✓</span><br/><span class="val-good">Completely driverless</span></td>
+        </tr>
+        <tr>
+          <td class="td-feature">FIPS certification<small>Government-grade security standard</small></td>
+          <td class="td-theirs"><span class="x-icon">✕</span><br/><span class="val-bad">Not certified</span></td>
+          <td class="td-ours"><span class="check-icon">✓</span><br/><span class="val-good">FIPS 140-2 Level 3 certified</span></td>
+        </tr>
+        <tr>
+          <td class="td-feature">Price</td>
+          <td class="td-theirs"><span class="val-warn">$15–30</span></td>
+          <td class="td-ours"><span class="val-good">$150–400</span></td>
+        </tr>
+        <tr class="win-row">
+          <td colspan="3">
+            <div class="win-label">Why it matters</div>
+            <div class="win-text">Software encryption can be bypassed. Hardware encryption cannot — the key never touches your operating system. Apricorn drives are used by the US military and federal agencies. When the price difference is your most sensitive files, the choice is straightforward.</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SMART HOME BLOCKER -->
+  <div class="compare-wrap" id="tbl-blocker" style="display:none">
+    <table>
+      <thead><tr>
+        <th class="th-feature">Feature</th>
+        <th class="th-theirs">Generic Router Filter<span>Unbranded / $20–40</span></th>
+        <th class="th-ours">Firewalla<span>beatingai recommended</span></th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td class="td-feature">Real-time monitoring<small>Can it see what devices are doing now?</small></td>
+          <td class="td-theirs"><span class="x-icon">✕</span><br/><span class="val-bad">No visibility, just basic blocks</span></td>
+          <td class="td-ours"><span class="check-icon">✓</span><br/><span class="val-good">Full real-time traffic dashboard</span></td>
+        </tr>
+        <tr>
+          <td class="td-feature">Device-level control<small>Block individual smart devices</small></td>
+          <td class="td-theirs"><span class="x-icon">✕</span><br/><span class="val-bad">All-or-nothing blocking only</span></td>
+          <td class="td-ours"><span class="check-icon">✓</span><br/><span class="val-good">Per-device blocking rules</span></td>
+        </tr>
+        <tr>
+          <td class="td-feature">Active threat detection<small>Alerts when something suspicious happens</small></td>
+          <td class="td-theirs"><span class="x-icon">✕</span><br/><span class="val-bad">None</span></td>
+          <td class="td-ours"><span class="check-icon">✓</span><br/><span class="val-good">Instant alerts to your phone</span></td>
+        </tr>
+        <tr>
+          <td class="td-feature">VPN support<small>Can run a VPN for your whole network?</small></td>
+          <td class="td-theirs"><span class="x-icon">✕</span><br/><span class="val-bad">Not supported</span></td>
+          <td class="td-ours"><span class="check-icon">✓</span><br/><span class="val-good">Built-in VPN server and client</span></td>
+        </tr>
+        <tr>
+          <td class="td-feature">Price</td>
+          <td class="td-theirs"><span class="val-warn">$20–40</span></td>
+          <td class="td-ours"><span class="val-good">$109–179</span></td>
+        </tr>
+        <tr class="win-row">
+          <td colspan="3">
+            <div class="win-label">Why it matters</div>
+            <div class="win-text">Your smart TV, speaker, and thermostat are all quietly sending data home. A generic filter blocks some of it blindly. Firewalla shows you exactly which device is calling out, where it is sending data, and lets you block it with one tap.</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- RFID WALLET -->
+  <div class="compare-wrap" id="tbl-wallet" style="display:none">
+    <table>
+      <thead><tr>
+        <th class="th-feature">Feature</th>
+        <th class="th-theirs">Generic RFID Wallet<span>Unbranded / $5–15</span></th>
+        <th class="th-ours">Ekster<span>beatingai recommended</span></th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td class="td-feature">Shielding tested<small>Verified against real skimming frequencies?</small></td>
+          <td class="td-theirs"><span class="x-icon">✕</span><br/><span class="val-bad">Unverified marketing claims</span></td>
+          <td class="td-ours"><span class="check-icon">✓</span><br/><span class="val-good">Tested across all NFC/RFID bands</span></td>
+        </tr>
+        <tr>
+          <td class="td-feature">Material<small>What actually does the blocking</small></td>
+          <td class="td-theirs"><span class="warn-icon">!</span><br/><span class="val-warn">Thin foil lining, degrades quickly</span></td>
+          <td class="td-ours"><span class="check-icon">✓</span><br/><span class="val-good">Aerospace-grade aluminium</span></td>
+        </tr>
+        <tr>
+          <td class="td-feature">Card capacity<small>How many cards does it actually hold?</small></td>
+          <td class="td-theirs"><span class="warn-icon">!</span><br/><span class="val-warn">Bulky when full</span></td>
+          <td class="td-ours"><span class="check-icon">✓</span><br/><span class="val-good">1–6 cards, slim profile</span></td>
+        </tr>
+        <tr>
+          <td class="td-feature">Tracker compatible<small>Works with AirTag or Tile?</small></td>
+          <td class="td-theirs"><span class="x-icon">✕</span><br/><span class="val-bad">No tracker slot</span></td>
+          <td class="td-ours"><span class="check-icon">✓</span><br/><span class="val-good">Built-in tracker card slot</span></td>
+        </tr>
+        <tr>
+          <td class="td-feature">Price</td>
+          <td class="td-theirs"><span class="val-warn">$5–15</span></td>
+          <td class="td-ours"><span class="val-good">$60–100</span></td>
+        </tr>
+        <tr class="win-row">
+          <td colspan="3">
+            <div class="win-label">Why it matters</div>
+            <div class="win-text">Most cheap RFID wallets use foil so thin it degrades within months and never covered the full frequency range to begin with. Ekster uses solid aluminium that does not degrade and has been tested across all frequencies that real skimmers use.</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- YUBICO SECURITY KEY -->
+  <div class="compare-wrap" id="tbl-yubico" style="display:none">
+    <table>
+      <thead><tr>
+        <th class="th-feature">Feature</th>
+        <th class="th-theirs">Generic / App-Based 2FA<span>SMS or authenticator app</span></th>
+        <th class="th-ours">Yubico YubiKey<span>beatingai recommended</span></th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td class="td-feature">Phishing proof<small>Can it be tricked by a fake login page?</small></td>
+          <td class="td-theirs"><span class="x-icon">✕</span><br/><span class="val-bad">SMS and app codes can be intercepted</span></td>
+          <td class="td-ours"><span class="check-icon">✓</span><br/><span class="val-good">Hardware key cannot be phished</span></td>
+        </tr>
+        <tr>
+          <td class="td-feature">SIM swap protection<small>Immune to SIM swap attacks?</small></td>
+          <td class="td-theirs"><span class="x-icon">✕</span><br/><span class="val-bad">SMS 2FA defeated by SIM swap</span></td>
+          <td class="td-ours"><span class="check-icon">✓</span><br/><span class="val-good">Physical key cannot be SIM swapped</span></td>
+        </tr>
+        <tr>
+          <td class="td-feature">Works offline<small>Requires internet or phone signal?</small></td>
+          <td class="td-theirs"><span class="warn-icon">!</span><br/><span class="val-warn">Requires phone signal or data</span></td>
+          <td class="td-ours"><span class="check-icon">✓</span><br/><span class="val-good">Works completely offline</span></td>
+        </tr>
+        <tr>
+          <td class="td-feature">Account compatibility<small>Works with major services?</small></td>
+          <td class="td-theirs"><span class="warn-icon">!</span><br/><span class="val-warn">Varies by app</span></td>
+          <td class="td-ours"><span class="check-icon">✓</span><br/><span class="val-good">Works with 700+ services including Google, Apple and Facebook</span></td>
+        </tr>
+        <tr>
+          <td class="td-feature">Malware resistant<small>Can malware on your phone steal it?</small></td>
+          <td class="td-theirs"><span class="x-icon">✕</span><br/><span class="val-bad">App codes vulnerable if phone is compromised</span></td>
+          <td class="td-ours"><span class="check-icon">✓</span><br/><span class="val-good">Physical key unreadable by malware</span></td>
+        </tr>
+        <tr>
+          <td class="td-feature">Price</td>
+          <td class="td-theirs"><span class="val-warn">Free</span></td>
+          <td class="td-ours"><span class="val-good">$25–55</span></td>
+        </tr>
+        <tr class="win-row">
+          <td colspan="3">
+            <div class="win-label">Why it matters</div>
+            <div class="win-text">SMS codes and authenticator apps are better than nothing but are still vulnerable to phishing, SIM swapping, and malware. A hardware key like YubiKey is the only form of 2FA that is completely immune to all of these attacks. One key protects every account you own.</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- VERDICT -->
+  <div class="verdict">
+    <div class="verdict-text">
+      <div class="verdict-eyebrow">The bottom line</div>
+      <div class="verdict-title">Pay more once. Stay protected always.</div>
+      <div class="verdict-sub">Cheap privacy products are often worse than nothing — they create false confidence while failing silently. Every brand we recommend has been chosen because it actually works and can prove it. The price difference is real. So are the results.</div>
+    </div>
+    <a href="./index.html#shop" class="verdict-btn">Shop Our Picks →</a>
+  </div>
+
+  <div class="disclaimer">* Prices shown are approximate and subject to change. Links to our recommended products are affiliate links — we may earn a small commission if you purchase through them, at no extra cost to you. This never influences which products we recommend or how we compare them.</div>
+
+</div>
+
+<script>
+function show(id) {
+  ['faraday','glasses','drive','blocker','wallet','yubico'].forEach(function(p){
+    document.getElementById('tbl-'+p).style.display = p===id ? 'block' : 'none';
+  });
+  document.querySelectorAll('.ptab').forEach(function(t,i){
+    t.classList.toggle('active', t.getAttribute('onclick').includes("'"+id+"'"));
+  });
+}
+</script>
+</body>
+</html>
