@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>beatingai — Take Back Your Privacy</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+:root{
+  --black:#060608;--white:#eeebe4;--green:#00e87a;
+  --red:#ff3c3c;--mid:#111115;--dim:#1e1e24;
+  --muted:#666672;--border:rgba(255,255,255,0.07);
+}
+body{background:var(--black);color:var(--white);font-family:'Crimson Pro',serif;overflow-x:hidden;cursor:none;}
+.cursor{width:10px;height:10px;background:var(--green);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s;}
+.cursor-ring{width:34px;height:34px;border:1px solid var(--green);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);opacity:.35;transition:left .1s ease,top .1s ease,width .2s,height .2s;}
+@media(hover:none),(pointer:coarse){.cursor,.cursor-ring{display:none;}body{cursor:auto;}}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:5000;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:1.2rem 3rem;z-index:500;background:rgba(6,6,8,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;letter-spacing:-.03em;}
+.nav-logo span{color:var(--green);}
+.nav-links{display:flex;gap:2rem;align-items:center;}
+.nav-links a{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s;}
+.nav-links a:hover{color:var(--white);}
+.nav-cta{background:var(--green)!important;color:var(--black)!important;padding:.6rem 1.3rem;font-weight:700;}
+
+
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:10rem 3rem 6rem;position:relative;overflow:hidden;}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,232,122,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,232,122,.03) 1px,transparent 1px);background-size:50px 50px;pointer-events:none;}
+.hero-glow{position:absolute;top:30%;right:10%;width:600px;height:600px;background:radial-gradient(circle,rgba(0,232,122,.06) 0%,transparent 65%);pointer-events:none;}
+.hero-scanline{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(0,232,122,.15),transparent);animation:scanDown 6s linear infinite;pointer-events:none;}
+.hero-tag{font-family:'Space Mono',monospace;font-size:.63rem;letter-spacing:.24em;text-transform:uppercase;color:var(--green);display:flex;align-items:center;gap:.8rem;margin-bottom:2rem;opacity:0;animation:up .7s .1s forwards;}
+.hero-tag::before{content:'';width:20px;height:1px;background:var(--green);}
+.hero-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(3.5rem,8vw,8.5rem);line-height:.93;letter-spacing:-.03em;max-width:860px;}
+.hero-title .line{display:block;opacity:0;transform:translateY(36px);}
+.hero-title .line:nth-child(1){animation:up .8s .3s forwards;}
+.hero-title .line:nth-child(2){animation:up .8s .5s forwards;}
+.hero-title .line:nth-child(3){animation:up .8s .7s forwards;}
+.hero-title .ghost{-webkit-text-stroke:1px rgba(255,255,255,.15);color:transparent;}
+.hero-title .lit{color:var(--green);}
+.hero-row{margin-top:3rem;display:grid;grid-template-columns:1.1fr 1fr;gap:4rem;align-items:end;max-width:860px;opacity:0;animation:up .8s .9s forwards;}
+.hero-desc{font-size:1.1rem;line-height:1.85;color:rgba(238,235,228,.55);}
+.hero-btns{display:flex;flex-direction:column;gap:1rem;}
+.threat-bar{position:absolute;bottom:3rem;right:3rem;border:1px solid rgba(255,60,60,.3);padding:1.2rem 1.8rem;background:rgba(255,60,60,.04);opacity:0;animation:up .8s 1.2s forwards;}
+.threat-label{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-bottom:.4rem;}
+.threat-num{font-family:'Syne',sans-serif;font-weight:800;font-size:2.2rem;color:var(--red);line-height:1;}
+.threat-sub{font-family:'Space Mono',monospace;font-size:.5rem;color:var(--muted);margin-top:.3rem;letter-spacing:.1em;}
+
+/* BUTTONS */
+.btn-primary{display:inline-block;background:var(--green);color:var(--black);font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;padding:1.1rem 2.4rem;text-decoration:none;cursor:none;transition:transform .2s,box-shadow .2s;border:none;}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,232,122,.22);}
+.btn-ghost{font-family:'Space Mono',monospace;font-size:.63rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:.5rem;transition:color .2s;background:none;border:none;cursor:none;}
+.btn-ghost:hover{color:var(--white);}
+.btn-ghost::after{content:'→';}
+.btn-outline{font-family:'Space Mono',monospace;font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:.5rem;transition:color .2s;}
+.btn-outline:hover{color:var(--white);}
+.btn-outline::after{content:'→';}
+
+/* TICKER */
+.ticker{background:var(--green);padding:.85rem 0;overflow:hidden;white-space:nowrap;}
+.ticker-track{display:inline-flex;animation:tick 26s linear infinite;}
+.ticker-item{font-family:'Space Mono',monospace;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--black);padding:0 2.2rem;}
+.ticker-sep{color:rgba(6,6,8,.35);padding-right:2.2rem;}
+
+/* SHARED */
+.section-eyebrow{font-family:'Space Mono',monospace;font-size:.63rem;letter-spacing:.22em;text-transform:uppercase;color:var(--green);margin-bottom:1.2rem;}
+.section-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2rem,4vw,3.2rem);letter-spacing:-.03em;line-height:1.05;margin-bottom:1.5rem;}
+.section-title em{font-family:'Crimson Pro',serif;font-style:italic;font-weight:300;color:var(--red);}
+
+/* THREATS */
+.threat-section{padding:7rem 3rem;background:var(--mid);}
+.threat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--dim);margin-top:3.5rem;}
+.threat-card{background:var(--mid);padding:2.5rem 2rem;border-top:2px solid var(--red);transition:background .3s;}
+.threat-card:hover{background:#16161c;}
+.threat-icon{font-size:1.8rem;margin-bottom:1.2rem;display:block;}
+.threat-name{font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:.8rem;}
+.threat-desc{font-size:.95rem;line-height:1.75;color:var(--muted);}
+
+/* ═══ SHOP ═══ */
+.shop-section{padding:7rem 3rem;}
+.shop-panel{display:none;}
+.shop-panel.active{display:block;}
+
+/* Physical products grid */
+.phys-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+.phys-card{border:1px solid var(--border);padding:2rem;transition:border-color .3s,background .3s;position:relative;}
+.phys-card:hover{border-color:var(--green);background:rgba(0,232,122,.02);}
+.phys-badge{position:absolute;top:1rem;right:1rem;font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;padding:.25rem .6rem;background:var(--green);color:var(--black);font-weight:700;}
+.phys-badge.affiliate{background:var(--dim);color:var(--muted);border:1px solid var(--border);}
+.phys-img-wrap{font-size:2.8rem;text-align:center;padding:1.5rem;background:var(--mid);margin-bottom:1.5rem;}
+.phys-name{font-family:'Syne',sans-serif;font-weight:700;font-size:1.05rem;margin-bottom:.5rem;}
+.phys-desc{font-size:.9rem;line-height:1.65;color:var(--muted);margin-bottom:1.2rem;}
+.phys-footer{display:flex;justify-content:space-between;align-items:center;margin-top:auto;}
+.phys-price{font-family:'Space Mono',monospace;font-size:.85rem;color:var(--green);}
+.btn-shop-link{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;background:var(--green);color:var(--black);border:none;padding:.6rem 1.2rem;cursor:none;font-weight:700;transition:opacity .2s;}
+.btn-shop-link:hover{opacity:.85;}
+.btn-affiliate{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;background:transparent;color:var(--muted);border:1px solid var(--border);padding:.6rem 1.2rem;cursor:none;transition:border-color .2s,color .2s;text-decoration:none;display:inline-block;}
+.btn-affiliate:hover{border-color:var(--white);color:var(--white);}
+
+
+/* ═══ CONSULTING / BOOKING ═══ */
+.consulting-section{padding:7rem 3rem;background:var(--mid);}
+.consulting-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;margin-top:4rem;align-items:start;}
+.tier-cards{display:flex;flex-direction:column;gap:1px;background:var(--dim);}
+.tier-card{background:var(--mid);padding:2rem 2.5rem;transition:background .3s;position:relative;}
+.tier-card.recommended{border-left:3px solid var(--green);}
+.tier-card:hover{background:#16161c;}
+.rec-badge{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:var(--green);margin-bottom:.5rem;display:block;}
+.tier-name{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;margin-bottom:.4rem;}
+.tier-price{font-family:'Space Mono',monospace;font-size:1.1rem;color:var(--green);margin-bottom:.8rem;}
+.tier-desc{font-size:.9rem;line-height:1.65;color:var(--muted);margin-bottom:1.2rem;}
+.tier-features{list-style:none;}
+.tier-features li{font-size:.88rem;color:rgba(238,235,228,.65);padding:.3rem 0;display:flex;align-items:center;gap:.6rem;}
+.tier-features li::before{content:'//';font-family:'Space Mono',monospace;font-size:.55rem;color:var(--green);}
+.btn-book{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;background:transparent;border:1px solid var(--border);color:var(--muted);padding:.6rem 1.4rem;cursor:none;transition:border-color .2s,color .2s,background .2s;margin-top:1.2rem;display:inline-block;width:100%;text-align:center;}
+.btn-book:hover,.tier-card.recommended .btn-book{border-color:var(--green);color:var(--green);}
+.tier-card.recommended .btn-book{background:rgba(0,232,122,.05);}
+
+/* Booking form */
+.booking-form-box{background:var(--black);border:1px solid var(--border);padding:3rem;position:relative;overflow:hidden;}
+.booking-form-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green),rgba(0,232,122,.2));}
+.form-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.5rem;letter-spacing:-.03em;margin-bottom:.5rem;}
+.form-sub{font-size:.95rem;color:var(--muted);margin-bottom:2rem;line-height:1.65;}
+.form-group{margin-bottom:1.2rem;}
+.form-label{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:.5rem;}
+.form-input{width:100%;background:var(--mid);border:1px solid var(--border);color:var(--white);font-family:'Crimson Pro',serif;font-size:1rem;padding:.8rem 1rem;transition:border-color .2s;outline:none;}
+.form-input:focus{border-color:var(--green);}
+.form-input::placeholder{color:var(--muted);}
+select.form-input option{background:var(--mid);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.form-note{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.1em;color:var(--muted);margin-top:.5rem;}
+.btn-submit{width:100%;margin-top:1rem;}
+.booking-success{display:none;text-align:center;padding:2rem;}
+.booking-success .check{font-size:3rem;margin-bottom:1rem;}
+.booking-success h3{font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;margin-bottom:.5rem;}
+.booking-success p{color:var(--muted);font-size:.95rem;line-height:1.7;}
+
+/* ═══ AFFILIATE SECTION ═══ */
+.affiliate-section{padding:7rem 3rem;background:var(--black);}
+.affiliate-note{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.12em;color:var(--muted);background:var(--dim);border:1px solid var(--border);padding:.8rem 1.2rem;display:inline-block;margin-bottom:3rem;}
+.affiliate-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--dim);}
+.aff-card{background:var(--black);padding:2rem 1.5rem;text-align:center;transition:background .3s;}
+.aff-card:hover{background:var(--mid);}
+.aff-logo{font-size:1.5rem;margin-bottom:1rem;display:block;}
+.aff-name{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:.5rem;}
+.aff-commission{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--green);margin-bottom:.8rem;}
+.aff-desc{font-size:.85rem;line-height:1.6;color:var(--muted);margin-bottom:1.5rem;}
+.aff-link{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--green);text-decoration:none;border:1px solid rgba(0,232,122,.3);padding:.5rem 1rem;display:inline-block;transition:background .2s;}
+.aff-link:hover{background:rgba(0,232,122,.08);}
+
+/* STATS */
+.stats-strip{background:var(--green);display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background-color:rgba(0,0,0,.1);}
+.stat-box{background:var(--green);padding:2.5rem 2rem;text-align:center;}
+.stat-big{font-family:'Syne',sans-serif;font-weight:800;font-size:2.8rem;color:var(--black);line-height:1;}
+.stat-lbl{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(6,6,8,.6);margin-top:.5rem;}
+
+/* NEWSLETTER */
+.blog-section{padding:5rem 3rem;background:var(--mid);border-top:1px solid var(--dim);border-bottom:1px solid var(--dim);}.blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:2.5rem;}.blog-card{background:var(--black);border:1px solid var(--dim);padding:2rem;display:flex;flex-direction:column;gap:1rem;transition:border-color .2s;}.blog-card:hover{border-color:var(--green);}.blog-tag{font-family:"Space Mono",monospace;font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;color:var(--green);}.blog-title{font-family:"Syne",sans-serif;font-weight:700;font-size:1.15rem;line-height:1.3;}.blog-excerpt{font-size:.95rem;color:rgba(238,235,228,.6);line-height:1.7;}.blog-read{font-family:"Space Mono",monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--green);text-decoration:none;margin-top:auto;}.blog-read:hover{text-decoration:underline;}.blog-cta{margin-top:2.5rem;text-align:center;}
+.nl-title{font-family:'Syne',sans-serif;font-weight:800;font-size:2rem;letter-spacing:-.03em;margin-bottom:.8rem;}
+.nl-title span{color:var(--green);}
+.nl-sub{font-size:1rem;line-height:1.75;color:var(--muted);}
+.nl-form{display:flex;gap:1px;background:var(--dim);}
+.nl-input{flex:1;background:var(--black);border:none;color:var(--white);font-family:'Crimson Pro',serif;font-size:1rem;padding:.9rem 1.2rem;outline:none;}
+.nl-input::placeholder{color:var(--muted);}
+.nl-btn{font-family:'Space Mono',monospace;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;background:var(--green);color:var(--black);border:none;padding:.9rem 1.8rem;cursor:none;font-weight:700;white-space:nowrap;transition:opacity .2s;}
+.nl-btn:hover{opacity:.85;}
+.nl-note{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.1em;color:var(--muted);margin-top:.8rem;}
+
+/* CTA */
+.cta{padding:8rem 3rem;text-align:center;position:relative;overflow:hidden;}
+.cta-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:400px;background:radial-gradient(ellipse,rgba(0,232,122,.06) 0%,transparent 65%);pointer-events:none;}
+.cta-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.5rem,6vw,5.5rem);letter-spacing:-.03em;line-height:.95;margin-bottom:1.5rem;}
+.cta-title em{font-family:'Crimson Pro',serif;font-style:italic;font-weight:300;color:var(--green);}
+.cta-sub{font-size:1.1rem;line-height:1.8;color:rgba(238,235,228,.5);max-width:500px;margin:0 auto 3rem;}
+.cta-btns{display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;align-items:center;}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:2.5rem 3rem;display:flex;justify-content:space-between;align-items:center;}
+.footer-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:-.02em;}
+.footer-logo span{color:var(--green);}
+.footer-copy{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.1em;color:var(--muted);}
+.footer-links{display:flex;gap:1.5rem;}
+.footer-links a{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s;}
+.footer-links a:hover{color:var(--white);}
+
+.qty-btn{background:var(--dim);border:none;color:var(--white);width:24px;height:24px;cursor:none;font-size:.9rem;transition:background .2s;}
+.qty-btn:hover{background:var(--green);color:var(--black);}
+.qty-num{font-family:'Space Mono',monospace;font-size:.7rem;min-width:20px;text-align:center;}
+
+.btn-checkout{width:100%;font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;background:var(--green);color:var(--black);border:none;padding:1.1rem;cursor:none;font-weight:700;transition:transform .2s,box-shadow .2s;}
+.btn-checkout:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,232,122,.25);}
+.stripe-note{font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.08em;color:var(--muted);text-align:center;margin-top:.8rem;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--mid);border:1px solid var(--border);padding:3rem;max-width:480px;width:90%;position:relative;}
+.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green),rgba(0,232,122,.2));}
+.modal-close{position:absolute;top:1.2rem;right:1.5rem;background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:none;}
+.modal-close:hover{color:var(--white);}
+.modal-icon{font-size:2.5rem;margin-bottom:1rem;}
+.modal-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.5rem;margin-bottom:.5rem;}
+.modal-desc{font-size:1rem;line-height:1.75;color:var(--muted);margin-bottom:2rem;}
+.modal-price{font-family:'Space Mono',monospace;font-size:1rem;color:var(--green);margin-bottom:1.5rem;}
+.stripe-form{margin-top:1rem;}
+#card-element{background:var(--black);border:1px solid var(--border);padding:1rem;color:var(--white);margin-bottom:1rem;}
+#card-errors{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--red);margin-bottom:1rem;min-height:1rem;}
+
+/* ANIMATIONS */
+@keyframes up{to{opacity:1;transform:translateY(0);}}
+@keyframes tick{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+@keyframes scanDown{0%{top:-2px;}100%{top:100%;}}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  nav{padding:1rem 1.2rem;}
+  .nav-links a:not(.nav-cta){display:none;}
+  .hero,.threat-section,.shop-section,.consulting-section,.affiliate-section,.newsletter,.cta{padding-left:1.5rem;padding-right:1.5rem;}
+  .hero-row{grid-template-columns:1fr;}
+  .threat-grid{grid-template-columns:1fr 1fr;}
+  .phys-grid{grid-template-columns:1fr 1fr;}  .consulting-grid{grid-template-columns:1fr;}
+  .affiliate-grid{grid-template-columns:1fr 1fr;}
+  .stats-strip{grid-template-columns:1fr 1fr;}
+  .blog-grid{grid-template-columns:1fr;}
+  footer{flex-direction:column;gap:1.2rem;text-align:center;}
+  .threat-bar{display:none;}
+}
+@media(max-width:600px){
+  .threat-grid,.phys-grid,.affiliate-grid{grid-template-columns:1fr;}
+  .form-row{grid-template-columns:1fr;}
+}
+</style>
+<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAdeklEQVR4nO3debRdZXn48WffKTfzJElQRgkJQ5C5UcBAZVDRwlKpCCIiMqiA+kNrUbGCVKuidAEt1WJBEUUs2IKVMghIkBSkoGAYk8goQ4DcJGa+957z+yNCRQJkOOfsfe/z+azFIiyz3vfJcufs7z1nn72Lrq7uegAAqbSVPQAA0HoCAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAA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js9cG20/auwjgvuP2zX6T927Yet17Xjehj8O+c+smn1CxKghDV2z0bo2O6vsEQY8AZBAd3d3bLvN1JgyZXJMnTI5tt56q5g0cWIMHzE8RgwfHiNGjIghQ7pi+fIVsWTp0li6ZEks6FkY8+b9Lh6cMy/mzJkXd93925g//5my/yg0WSUC4Hmr+qPtvx6ItiseiLZbHo1YtQF3kRw5JGpv2iRqB24dtXdOjehyO+KBTgBsOAEAvKBSAfCnlvZG2x1PRHHXU1Hc90wUjy+OeGpJFEtWRazoW/17hnZGfXhnxPCuqG8yKupbjonYcmzU3jAp6jtNimgvSv0j0FgCYMN5GiBQfcM7ozZj84gZm5c9CQwaLgIEgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAOAFnrDGQOA4bQwBAAAJCQAASEgAAC/i7VWqzPHZOAIAABISAMBL+CmLKnJcNpYAAICEBACwRn7aokocj40nAICX5UWXKnAcNocAAF6RF1/K5PhrHgEAvCovwpTBcddcAgBYK16MaSXHW/MJAGCteVGmFRxnrVF0dXXXyx4CGHhWPXpy2SMwyDjxt5YAADaIEGBDOfGXQwAADSMGWFtO+uUTAACQkIsAASAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBC/x/2elR8iRO3bQAAAABJRU5ErkJggg==" type="image/png"/>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="ring"></div>
+
+
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">beating<span>ai</span></div>
+  <div class="nav-links">
+    <a href="#shop">Shop</a>
+    <a href="#affiliates">Partners</a>
+    <a href="blog.html">Blog</a>
+
+    <a href="#shop" class="nav-cta">Get Protected</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-scanline"></div>
+  <div class="hero-tag">AI is watching. Here's how to fight back.</div>
+  <h1 class="hero-title">
+    <span class="line">Your data.</span>
+    <span class="line">Your <span class="lit">rules.</span></span>
+    <span class="line ghost">Not theirs.</span>
+  </h1>
+  <div class="hero-row">
+    <p class="hero-desc">AI systems are harvesting your information, habits, voice, and identity — right now. beatingai gives you the tools, knowledge, and products to take back control and stay one step ahead.</p>
+    <div class="hero-btns">
+      <a href="#shop" class="btn-primary">Shop Protection Tools</a>
+      <a href="#affiliates" class="btn-ghost">Browse trusted privacy tools</a>
+    </div>
+  </div>
+  <div class="threat-bar">
+    <div class="threat-label">⚠ Data points harvested today</div>
+    <div class="threat-num" id="counter">0</div>
+    <div class="threat-sub">estimated globally — and rising</div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span class="ticker-item">Stop AI Data Harvesting</span><span class="ticker-sep">✦</span>
+    <span class="ticker-item">Privacy Tools That Work</span><span class="ticker-sep">✦</span>
+    <span class="ticker-item">Real Protection. Real People.</span><span class="ticker-sep">✦</span>
+    <span class="ticker-item">Reclaim Your Digital Life</span><span class="ticker-sep">✦</span>
+    <span class="ticker-item">Beat the Algorithm</span><span class="ticker-sep">✦</span>
+    <span class="ticker-item">Knowledge is Your Shield</span><span class="ticker-sep">✦</span>
+    <span class="ticker-item">Stop AI Data Harvesting</span><span class="ticker-sep">✦</span>
+    <span class="ticker-item">Privacy Tools That Work</span><span class="ticker-sep">✦</span>
+    <span class="ticker-item">Real Protection. Real People.</span><span class="ticker-sep">✦</span>
+    <span class="ticker-item">Reclaim Your Digital Life</span><span class="ticker-sep">✦</span>
+    <span class="ticker-item">Beat the Algorithm</span><span class="ticker-sep">✦</span>
+    <span class="ticker-item">Knowledge is Your Shield</span><span class="ticker-sep">✦</span>
+  </div>
+</div>
+
+<!-- THREATS -->
+<section class="threat-section" id="threats">
+  <div class="section-eyebrow">The Problem</div>
+  <h2 class="section-title">What AI is doing to your data <em>right now</em></h2>
+  <div class="threat-grid">
+    <div class="threat-card reveal"><span class="threat-icon">👁️</span><h3 class="threat-name">Behavioral Tracking</h3><p class="threat-desc">Every click, scroll, pause, and purchase is logged, analyzed, and sold. AI models are trained on your behavior to predict — and manipulate — you.</p></div>
+    <div class="threat-card reveal"><span class="threat-icon">🎙️</span><h3 class="threat-name">Voice & Face Harvesting</h3><p class="threat-desc">Smart devices and cameras feed your biometric data into AI databases. Your face and voice can identify you anywhere — without permission.</p></div>
+    <div class="threat-card reveal"><span class="threat-icon">📱</span><h3 class="threat-name">App Data Mining</h3><p class="threat-desc">Free apps harvest your location, contacts, and usage patterns to train AI systems and sell access to advertisers and governments.</p></div>
+    <div class="threat-card reveal"><span class="threat-icon">🔗</span><h3 class="threat-name">Cross-Platform Profiling</h3><p class="threat-desc">AI stitches together data from dozens of sources to build a profile that knows you better than you know yourself.</p></div>
+    <div class="threat-card reveal"><span class="threat-icon">🤖</span><h3 class="threat-name">AI Deepfakes</h3><p class="threat-desc">Your photos and videos can generate convincing fake content. AI clones your likeness, voice, and writing style with minimal source material.</p></div>
+    <div class="threat-card reveal"><span class="threat-icon">☁️</span><h3 class="threat-name">Cloud Exposure</h3><p class="threat-desc">Files in cloud services are regularly scanned and used for AI training. Your private documents are not as private as you think.</p></div>
+  </div>
+</section>
+
+<!-- ═══ SHOP ═══ -->
+<section class="shop-section" id="shop">
+  <div class="section-eyebrow">Privacy Shop</div>
+  <h2 class="section-title">Privacy Shop</h2>
+  <div style="font-family:'Space Mono',monospace;font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--border);">🛡️ Privacy Protection Products</div>
+  <p style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);margin-bottom:2rem;">Not sure if our picks are worth it? <a href="./compare.html" style="color:var(--green);text-decoration:none;border-bottom:1px solid rgba(0,232,122,.3);">See how they compare to other alternatives →</a></p>
+
+  <!-- PHYSICAL -->
+  <div class="shop-panel active" id="panel-physical">
+    <div class="phys-grid">
+      <div class="phys-card reveal">
+        <span class="phys-badge">In Stock</span>
+        <div class="phys-img-wrap">📡</div>
+        <h3 class="phys-name">Silent Pocket Faraday Bag</h3>
+        <p class="phys-desc">Silent Pocket's military-grade Faraday bags block all signals — GPS, 5G, WiFi, Bluetooth, and RFID. Independently tested and verified.</p>
+        <div class="phys-footer">
+          <a class="btn-shop-link" href="https://silentpocket.com?ref=beatingai" target="_blank">Shop Silent Pocket →</a>
+        </div>
+      </div>
+      <div class="phys-card reveal">
+        <span class="phys-badge">Popular</span>
+        <div class="phys-img-wrap">🎭</div>
+        <h3 class="phys-name">Reflectacles Reflectacles Anti-FR Glasses</h3>
+        <p class="phys-desc">Reflectacles patented IR-emitting frames disrupt AI facial recognition cameras while looking completely normal to the human eye.</p>
+        <div class="phys-footer">
+          <a class="btn-shop-link" href="https://reflectacles.com?ref=beatingai" target="_blank">Shop Reflectacles →</a>
+        </div>
+      </div>
+      <div class="phys-card reveal">
+        <div class="phys-img-wrap">🔒</div>
+        <h3 class="phys-name">Webcam & Mic Blocker</h3>
+        <p class="phys-desc">Physical camera cover and microphone blocker. Cuts the circuit at hardware level — no software workaround.</p>
+        <div class="phys-footer">
+          <a class="btn-shop-link" href="https://www.amazon.com/dp/B079MCPJGH?tag=beatingai-20" target="_blank">Shop on Amazon →</a>
+        </div>
+      </div>
+      <div class="phys-card reveal">
+        <span class="phys-badge">Premium</span>
+        <div class="phys-img-wrap">💾</div>
+        <h3 class="phys-name">Apricorn Encrypted Drive</h3>
+        <p class="phys-desc">Apricorn's hardware-encrypted drives never connect to the internet. PIN access only, tamper-protected.</p>
+        <div class="phys-footer">
+          <a class="btn-shop-link" href="https://apricorn.com?ref=beatingai" target="_blank">Shop Apricorn →</a>
+        </div>
+      </div>
+      <div class="phys-card reveal">
+        <div class="phys-img-wrap">🏠</div>
+        <h3 class="phys-name">Firewalla Smart Blocker</h3>
+        <p class="phys-desc">Firewalla plugs into your router and blocks unauthorised data transmissions from every smart device automatically.</p>
+        <div class="phys-footer">
+          <a class="btn-shop-link" href="https://firewalla.com?ref=beatingai" target="_blank">Shop Firewalla →</a>
+        </div>
+      </div>
+      <div class="phys-card reveal">
+        <div class="phys-img-wrap">🃏</div>
+        <h3 class="phys-name">Ekster RFID Blocking Wallet</h3>
+        <p class="phys-desc">Ekster's slim aluminium wallet blocks RFID and NFC skimming on all your cards and passport. Tested against all known skimming frequencies.</p>
+        <div class="phys-footer">
+          <a class="btn-shop-link" href="https://ekster.com?ref=beatingai" target="_blank">Shop Ekster →</a>
+        </div>
+      </div>
+      <div class="phys-card reveal">
+        <div class="phys-img-wrap">🔑</div>
+        <h3 class="phys-name">Yubico Security Key</h3>
+        <p class="phys-desc">The world's most trusted hardware security key. Stops 100% of automated account takeovers. Works with Gmail, Facebook, and hundreds of other services.</p>
+        <div class="phys-footer">
+          <a class="btn-shop-link" href="https://yubico.com?ref=beatingai" target="_blank">Shop Yubico →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══ AFFILIATES ═══ -->
+<section class="affiliate-section" id="affiliates">
+  <div class="section-eyebrow">Trusted Privacy Partners</div>
+  <h2 class="section-title">Why We Work With Affiliates — Not Resellers</h2>
+
+  <div style="max-width:680px;margin-bottom:3rem;">
+    <p style="font-size:1rem;color:var(--muted);line-height:1.85;margin-bottom:2rem;">Most privacy businesses buy cheap products in bulk, mark them up, and sell them directly to you. We chose a different model — and here is why.</p>
+
+    <div style="display:flex;flex-direction:column;gap:1.25rem;margin-bottom:2rem;">
+      <div style="display:flex;gap:1.25rem;align-items:flex-start;padding:1.25rem;background:var(--card-dark);border-left:3px solid var(--green);">
+        <div style="font-family:'Space Mono',monospace;font-size:.65rem;font-weight:700;color:var(--green);letter-spacing:.15em;flex-shrink:0;padding-top:.1rem;">01</div>
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--off-white);margin-bottom:.4rem;">We Never Touch the Price</div>
+          <p style="font-size:.85rem;color:var(--muted);line-height:1.75;">By recommending products through affiliate links rather than reselling them, you always pay the original retail price. No markups. No upsells. What the manufacturer charges is what you pay.</p>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:1.25rem;align-items:flex-start;padding:1.25rem;background:var(--card-dark);border-left:3px solid var(--green);">
+        <div style="font-family:'Space Mono',monospace;font-size:.65rem;font-weight:700;color:var(--green);letter-spacing:.15em;flex-shrink:0;padding-top:.1rem;">02</div>
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--off-white);margin-bottom:.4rem;">We Only Recommend What We Actually Use</div>
+          <p style="font-size:.85rem;color:var(--muted);line-height:1.75;">Resellers are incentivised to push whatever has the highest margin — not whatever works best. Our affiliate model removes that conflict entirely. Every product on this page has been tested by us personally. If we would not use it ourselves, it does not appear here.</p>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:1.25rem;align-items:flex-start;padding:1.25rem;background:var(--card-dark);border-left:3px solid var(--green);">
+        <div style="font-family:'Space Mono',monospace;font-size:.65rem;font-weight:700;color:var(--green);letter-spacing:.15em;flex-shrink:0;padding-top:.1rem;">03</div>
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--off-white);margin-bottom:.4rem;">People Before Profit</div>
+          <p style="font-size:.85rem;color:var(--muted);line-height:1.75;">The world is moving fast toward a model where your trust is something to be monetised. We think that is exactly backwards. Without the trust of the people who support us, beatingai is nothing. That principle shapes every decision we make — including how we make money.</p>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:1.25rem;align-items:flex-start;padding:1.25rem;background:var(--card-dark);border-left:3px solid var(--green);">
+        <div style="font-family:'Space Mono',monospace;font-size:.65rem;font-weight:700;color:var(--green);letter-spacing:.15em;flex-shrink:0;padding-top:.1rem;">04</div>
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--off-white);margin-bottom:.4rem;">Your Recommendations Shape What We Feature</div>
+          <p style="font-size:.85rem;color:var(--muted);line-height:1.75;">Because we are not locked into inventory or supplier contracts, we can respond to what our community actually needs. If there is a product you believe belongs here, tell us. We are always listening.</p>
+        </div>
+      </div>
+    </div>
+
+    <p style="font-family:'Space Mono',monospace;font-size:.7rem;color:var(--muted);line-height:1.75;padding:.9rem 1.1rem;border:1px solid rgba(255,255,255,.07);border-left:3px solid rgba(0,232,122,.3);">Disclosure: Links below are affiliate links. If you purchase through them we may receive a small commission at no extra cost to you. This never influences which products we recommend.</p>
+  </div>
+  <p style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);margin-bottom:2.5rem;">Not sure why we chose these brands over cheaper alternatives? <a href="./compare.html" style="color:var(--green);text-decoration:none;border-bottom:1px solid rgba(0,232,122,.3);">See the full comparison →</a></p>
+  <div class="affiliate-grid">
+    <div class="aff-card reveal">
+      <span class="aff-logo">🌐</span>
+      <div class="aff-name">NordVPN</div>
+      <div class="aff-commission">Top Rated VPN</div>
+      <p class="aff-desc">Industry-leading VPN with no-log policy and AI traffic obfuscation.</p>
+      <a href="https://go.nordvpn.net/aff_c?offer_id=15&amp;aff_id=143059&amp;url_id=902" target="_blank" class="aff-link">Get NordVPN →</a>
+    </div>
+    <div class="aff-card reveal">
+      <span class="aff-logo">📧</span>
+      <div class="aff-name">ProtonMail</div>
+      <div class="aff-commission">Encrypted Email</div>
+      <p class="aff-desc">End-to-end encrypted email that can't be scanned by AI systems.</p>
+      <a href="https://proton.me" target="_blank" class="aff-link">Get ProtonMail →</a>
+    </div>
+    <div class="aff-card reveal">
+      <span class="aff-logo">🔑</span>
+      <div class="aff-name">1Password</div>
+      <div class="aff-commission">Password Security</div>
+      <p class="aff-desc">Zero-knowledge password manager. Your vault is never readable by anyone but you.</p>
+      <a href="https://1password.com" target="_blank" class="aff-link">Get 1Password →</a>
+    </div>
+    <div class="aff-card reveal">
+      <span class="aff-logo">🛡️</span>
+      <div class="aff-name">DeleteMe</div>
+      <div class="aff-commission">Data Removal</div>
+      <p class="aff-desc">Automated service that removes your personal info from data broker sites.</p>
+      <a href="https://www.de33watrk.com/MHM39T/KMKS9/" target="_blank" class="aff-link">Get DeleteMe →</a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-strip">
+  <div class="stat-box"><div class="stat-big">4.7B</div><div class="stat-lbl">People profiled by AI</div></div>
+  <div class="stat-box"><div class="stat-big">$450B</div><div class="stat-lbl">Data broker industry</div></div>
+  <div class="stat-box"><div class="stat-big">87%</div><div class="stat-lbl">Apps share your data</div></div>
+  <div class="stat-box"><div class="stat-big">0</div><div class="stat-lbl">Days to start protecting yourself</div></div>
+</div>
+
+<!-- NEWSLETTER -->
+<section class="blog-section" id="blog">
+  <div class="section-eyebrow">Weekly Blog</div>
+  <h2 class="section-title">Privacy <span style="color:var(--green)">Insights</span></h2>
+  <p style="color:rgba(238,235,228,.6);font-size:1.05rem;margin-top:.5rem;">Real threats. Practical fixes. No fluff. Updated every week.</p>
+  <div class="blog-grid">
+    <div class="blog-card">
+      <div class="blog-tag">Threat Alert · Week 1</div>
+      <div class="blog-title">How AI Is Quietly Building a Profile on You Right Now</div>
+      <div class="blog-excerpt">Every search, every click, every pause on a video — AI systems are stitching together a detailed profile of who you are. Here is exactly how it works and what you can do about it today.</div>
+      <a href="blog.html#post-1" class="blog-read">Read More →</a>
+    </div>
+    <div class="blog-card">
+      <div class="blog-tag">How-To · Week 2</div>
+      <div class="blog-title">5 Settings on Your Phone That Are Leaking Your Location Right Now</div>
+      <div class="blog-excerpt">Most people have no idea their phone is broadcasting their location to dozens of apps even when GPS is off. These five settings take two minutes to fix and stop the bleeding immediately.</div>
+      <a href="blog.html#post-2" class="blog-read">Read More →</a>
+    </div>
+    <div class="blog-card">
+      <div class="blog-tag">Deep Dive · Week 3</div>
+      <div class="blog-title">Facial Recognition Is in More Places Than You Think</div>
+      <div class="blog-excerpt">From supermarket entrances to sports stadiums, facial recognition cameras are being deployed faster than any regulation can keep up. Here is where they are and how to make yourself harder to identify.</div>
+      <a href="blog.html#post-3" class="blog-read">Read More →</a>
+    </div>
+  </div>
+  <div class="blog-cta">
+    <a href="blog.html" class="btn-primary">Read All Posts →</a>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="cta-glow"></div>
+  <div class="section-eyebrow" style="justify-content:center;display:flex;margin-bottom:1.5rem;">Take Action Today</div>
+  <h2 class="cta-title">Stop being<br/>the <em>product.</em></h2>
+  <p class="cta-sub">Join thousands of people who've taken back control. Shop tools or start with a free guide.</p>
+  <div class="cta-btns">
+    <a href="#shop" class="btn-primary">Shop Now</a>
+    <a href="#affiliates" class="btn-outline">Browse Partner Tools</a>
+  </div>
+</section>
+
+
+<!-- APP BENEFITS -->
+<section style="background:var(--black);padding:6rem 2rem;border-top:1px solid rgba(255,255,255,.06);overflow:hidden;position:relative;">
+  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(0,232,122,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(0,232,122,.018) 1px,transparent 1px);background-size:32px 32px;pointer-events:none;"></div>
+  <div style="max-width:900px;margin:0 auto;position:relative;">
+
+    <div style="text-align:center;margin-bottom:3.5rem;">
+      <div class="section-eyebrow" style="justify-content:center;display:flex;">Free App</div>
+      <h2 class="section-title">Take beatingai<br/>everywhere you go</h2>
+      <p style="font-size:1rem;color:var(--muted);line-height:1.8;max-width:520px;margin:0 auto;">Install the beatingai app directly to your phone — no App Store, no account, no tracking. Everything below is free, forever.</p>
+    </div>
+
+    <!-- THREE HOME SCREEN FEATURES -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:3.5rem;">
+
+      <div class="reveal" style="background:var(--card-dark);border:1px solid rgba(255,255,255,.06);padding:1.75rem;border-top:3px solid var(--red);">
+        <div style="font-size:1.8rem;margin-bottom:1rem;">🚨</div>
+        <div style="font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:var(--off-white);margin-bottom:.6rem;">Daily Threat Alert</div>
+        <p style="font-family:'Space Mono',monospace;font-size:.7rem;color:var(--muted);line-height:1.75;">Every day a new real-world AI privacy threat lands on your home screen automatically. 30 threats pre-loaded and rotating by date — no notifications, no algorithm, no noise. Just the one thing you need to know today.</p>
+      </div>
+
+      <div class="reveal" style="background:var(--card-dark);border:1px solid rgba(255,255,255,.06);padding:1.75rem;border-top:3px solid var(--green);">
+        <div style="font-size:1.8rem;margin-bottom:1rem;">📊</div>
+        <div style="font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:var(--off-white);margin-bottom:.6rem;">Your Privacy Score</div>
+        <p style="font-family:'Space Mono',monospace;font-size:.7rem;color:var(--muted);line-height:1.75;">A live score from 0 to 100 showing how protected you actually are right now. Tap the privacy tools you already use — VPN, encrypted email, 2FA, password manager — and your score updates instantly. Saved permanently to your phone.</p>
+      </div>
+
+      <div class="reveal" style="background:var(--card-dark);border:1px solid rgba(255,255,255,.06);padding:1.75rem;border-top:3px solid var(--green);">
+        <div style="font-size:1.8rem;margin-bottom:1rem;">🎯</div>
+        <div style="font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;color:var(--off-white);margin-bottom:.6rem;">Weekly Privacy Challenge</div>
+        <p style="font-family:'Space Mono',monospace;font-size:.7rem;color:var(--muted);line-height:1.75;">One privacy action every week, broken into three checkable steps. Complete all three and earn +15 points on your score. Build a weekly streak. 12 challenges pre-loaded and rotating automatically — no repeats for three months.</p>
+      </div>
+
+    </div>
+
+    <!-- HOW TO INSTALL -->
+    <div style="background:var(--card-dark);border:1px solid rgba(255,255,255,.06);padding:2.5rem;text-align:center;">
+      <div style="font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.2em;color:var(--green);margin-bottom:1rem;">HOW TO INSTALL — 30 SECONDS</div>
+      <div style="display:flex;justify-content:center;gap:3rem;margin-bottom:2rem;flex-wrap:wrap;">
+        <div style="text-align:center;">
+          <div style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--green);margin-bottom:.4rem;">1</div>
+          <div style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);line-height:1.6;">Open this website<br/>on your phone</div>
+        </div>
+        <div style="font-family:'Syne',sans-serif;font-size:2rem;color:rgba(255,255,255,.1);align-self:center;">→</div>
+        <div style="text-align:center;">
+          <div style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--green);margin-bottom:.4rem;">2</div>
+          <div style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);line-height:1.6;">Tap Share then<br/>"Add to Home Screen"</div>
+        </div>
+        <div style="font-family:'Syne',sans-serif;font-size:2rem;color:rgba(255,255,255,.1);align-self:center;">→</div>
+        <div style="text-align:center;">
+          <div style="font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;color:var(--green);margin-bottom:.4rem;">3</div>
+          <div style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);line-height:1.6;">Tap Add — done.<br/>Opens like any app.</div>
+        </div>
+      </div>
+      <p style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);line-height:1.7;max-width:480px;margin:0 auto 1.75rem;">No App Store. No Google Play. No account required. Installs in seconds and never asks for any permissions.</p>
+      <a href="./app.html" style="display:inline-block;background:var(--green);color:var(--black);font-family:'Space Mono',monospace;font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:1rem 2.5rem;text-decoration:none;">Install the App Free →</a>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">beating<span>ai</span></div>
+  <div class="footer-copy">© 2026 beatingai — Privacy is a right, not a privilege.</div>
+  <div class="footer-links">
+    <a href="#" onclick="openLegal('privacy');return false;">Privacy Policy</a>
+    <a href="#" onclick="openLegal('terms');return false;">Terms</a>
+    <a href="#" onclick="openLegal('affiliate');return false;">Partner Disclosure</a>
+    <a href="#" onclick="openLegal('refund');return false;">Refunds</a>
+    <a href="blog.html">Blog</a>
+  </div>
+</footer>
+
+<script>
+/* ══ CURSOR ══ */
+const cur=document.getElementById('cursor'),ring=document.getElementById('ring');
+document.addEventListener('mousemove',e=>{
+  cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';
+  ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px';
+});
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.width='18px';cur.style.height='18px';ring.style.width='46px';ring.style.height='46px';});
+  el.addEventListener('mouseleave',()=>{cur.style.width='10px';cur.style.height='10px';ring.style.width='34px';ring.style.height='34px';});
+});
+
+/* ══ SCROLL REVEAL ══ */
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+/* ══ THREAT COUNTER ══ */
+let count=0,target=2847391;
+const cEl=document.getElementById('counter');
+const step=Math.ceil(target/120);
+const tmr=setInterval(()=>{count=Math.min(count+step,target);cEl.textContent=count.toLocaleString();if(count>=target){clearInterval(tmr);setInterval(()=>{count+=Math.floor(Math.random()*1200+300);cEl.textContent=count.toLocaleString();},800);}},16);
+
+/* ══ SHOP TABS ══ */
+
+async function handleBooking(){
+  const fn=document.getElementById('bookFirstName').value;
+  const email=document.getElementById('bookEmail').value;
+  if(!fn||!email){showToast('Please fill in your name and email.');return;}
+  showToast('Confirming your booking...');
+  /* In production: create PaymentIntent for selected tier, confirm, send calendar invite */
+  setTimeout(()=>{
+    document.getElementById('bookingForm').style.display='none';
+    document.getElementById('bookingSuccess').style.display='block';
+  },1500);
+}
+
+/* ══ DOWNLOAD MODAL ══ */
+let currentProduct=null;
+
+/* ══ BOOKING TIER SELECT ══ */
+function selectTier(name,price){
+  const sel=document.getElementById('bookTier');
+  for(let o of sel.options){if(o.value.includes(name)){sel.value=o.value;break;}}
+  document.getElementById('consulting').scrollIntoView({behavior:'smooth'});
+  document.getElementById('bookFirstName').focus();
+}
+
+/* ══ NEWSLETTER ══ */
+function subscribeNewsletter(){
+  const email=document.getElementById('nlEmail').value;
+  if(!email||!email.includes('@')){showToast('Please enter a valid email.');return;}
+  document.getElementById('nlNote').textContent='🎉 You\'re in! Check your inbox for a welcome email.';
+  document.getElementById('nlNote').style.color='var(--green)';
+  document.getElementById('nlEmail').value='';
+  /* In production: POST to Mailchimp/ConvertKit API */
+}
+
+/* ══ TOAST ══ */
+function showToast(msg){
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:var(--green);color:var(--black);font-family:Space Mono,monospace;font-size:.65rem;letter-spacing:.1em;padding:.8rem 1.8rem;z-index:9000;font-weight:700;opacity:0;transition:opacity .3s;white-space:nowrap;';
+  t.textContent=msg;document.body.appendChild(t);
+  setTimeout(()=>t.style.opacity='1',10);
+  setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),300);},2800);
+}
+function showAlert(msg){
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:var(--mid);border:1px solid var(--green);color:var(--white);font-family:Space Mono,monospace;font-size:.62rem;letter-spacing:.08em;padding:1rem 2rem;z-index:9000;opacity:0;transition:opacity .3s;max-width:400px;text-align:center;line-height:1.6;';
+  t.innerHTML=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.style.opacity='1',10);
+  setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),300);},5000);
+}
+
+/* ══ LEGAL OVERLAY ══ */
+function openLegal(tab) {
+  document.getElementById('legalOverlay').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+  switchLegalTab(tab, document.querySelector('.lo-tab'));
+  // Activate correct tab button
+  const tabs = document.querySelectorAll('.lo-tab');
+  const map = {privacy:0, terms:1, affiliate:2, refund:3};
+  tabs.forEach((t,i) => t.classList.toggle('active', i === (map[tab]||0)));
+  // Activate correct panel
+  document.querySelectorAll('.lo-panel').forEach(p => p.classList.remove('active'));
+  const panelMap = {privacy:'lo-privacy', terms:'lo-terms', affiliate:'lo-affiliate', refund:'lo-refund'};
+  const target = document.getElementById(panelMap[tab]);
+  if(target) target.classList.add('active');
+}
+
+function closeLegal() {
+  document.getElementById('legalOverlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function switchLegalTab(tab, btn) {
+  document.querySelectorAll('.lo-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.lo-panel').forEach(p => p.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  const panelMap = {privacy:'lo-privacy', terms:'lo-terms', affiliate:'lo-affiliate', refund:'lo-refund'};
+  const target = document.getElementById(panelMap[tab]);
+  if(target) target.classList.add('active');
+  // Sync tab buttons
+  const map = {privacy:0, terms:1, affiliate:2, refund:3};
+  document.querySelectorAll('.lo-tab').forEach((t,i) => t.classList.toggle('active', i === (map[tab]||0)));
+}
+
+</script>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- LEGAL OVERLAY — Privacy, Terms, Disclosure, Refunds -->
+<!-- ═══════════════════════════════════════════ -->
+<div id="legalOverlay" style="display:none;position:fixed;inset:0;background:var(--black);z-index:2000;overflow-y:auto;">
+
+<style>
+/* Legal overlay styles */
+.lo-nav{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;padding:1.2rem 3rem;background:rgba(6,6,8,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);z-index:10;}
+.lo-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;letter-spacing:-.03em;}
+.lo-logo span{color:var(--green);}
+.lo-close{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);background:none;border:1px solid var(--border);padding:.6rem 1.2rem;cursor:none;transition:color .2s,border-color .2s;}
+.lo-close:hover{color:var(--white);border-color:var(--white);}
+.lo-hero{padding:6rem 3rem 3rem;border-bottom:1px solid var(--border);}
+.lo-eyebrow{font-family:'Space Mono',monospace;font-size:.63rem;letter-spacing:.24em;text-transform:uppercase;color:var(--green);margin-bottom:1.2rem;display:flex;align-items:center;gap:.8rem;}
+.lo-eyebrow::before{content:'';width:20px;height:1px;background:var(--green);}
+.lo-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2rem,5vw,4rem);line-height:.95;letter-spacing:-.03em;margin-bottom:1rem;}
+.lo-title span{color:var(--green);}
+.lo-meta{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.14em;color:var(--muted);}
+.lo-tabs{display:flex;gap:1px;background:var(--dim);border-bottom:1px solid var(--border);position:sticky;top:65px;z-index:9;}
+.lo-tab{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;padding:.9rem 1.5rem;background:var(--black);color:var(--muted);border:none;cursor:none;transition:background .2s,color .2s;flex:1;text-align:center;}
+.lo-tab.active{background:var(--green);color:var(--black);font-weight:700;}
+.lo-tab:hover:not(.active){background:var(--mid);color:var(--white);}
+.lo-panel{display:none;max-width:800px;margin:0 auto;padding:4rem 3rem 7rem;}
+.lo-panel.active{display:block;}
+.lo-highlight{background:var(--mid);border-left:3px solid var(--green);padding:1.5rem 2rem;margin-bottom:3rem;}
+.lo-highlight p{font-size:1rem;line-height:1.8;color:rgba(238,235,228,.8);}
+.lo-highlight strong{color:var(--white);}
+.lo-warning{background:rgba(255,60,60,.04);border-left:3px solid var(--red);padding:1.5rem 2rem;margin:1.5rem 0;}
+.lo-warning p{font-size:.95rem;line-height:1.8;color:rgba(238,235,228,.75);}
+.lo-sec{margin-bottom:3rem;}
+.lo-num{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.2em;color:var(--green);margin-bottom:.4rem;}
+.lo-h{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;letter-spacing:-.02em;margin-bottom:1rem;padding-bottom:.7rem;border-bottom:1px solid var(--dim);}
+.lo-p{font-size:1rem;line-height:1.85;color:rgba(238,235,228,.7);margin-bottom:.8rem;}
+.lo-p a{color:var(--green);text-decoration:none;}
+.lo-p a:hover{text-decoration:underline;}
+.lo-ul{list-style:none;margin:.8rem 0 1.2rem;}
+.lo-ul li{font-size:.95rem;line-height:1.8;color:rgba(238,235,228,.7);padding:.4rem 0;border-bottom:1px solid var(--dim);display:flex;align-items:flex-start;gap:.8rem;}
+.lo-ul li::before{content:'//';font-family:'Space Mono',monospace;font-size:.55rem;color:var(--green);margin-top:.38rem;flex-shrink:0;}
+.lo-ul li strong{color:var(--white);}
+.lo-contact{background:var(--mid);border:1px solid var(--border);padding:2.5rem;margin-top:4rem;text-align:center;}
+.lo-contact h3{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;margin-bottom:.6rem;}
+.lo-contact p{font-size:.95rem;color:var(--muted);line-height:1.7;margin-bottom:1.2rem;}
+.lo-contact a{font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--green);text-decoration:none;border:1px solid rgba(0,232,122,.3);padding:.65rem 1.6rem;display:inline-block;transition:background .2s;}
+.lo-contact a:hover{background:rgba(0,232,122,.08);}
+@media(max-width:768px){
+  .lo-nav{padding:1rem 1.5rem;}
+  .lo-hero,.lo-panel{padding-left:1.5rem;padding-right:1.5rem;}
+  .lo-tab{font-size:.5rem;padding:.8rem .6rem;}
+}
+</style>
+
+<!-- NAV -->
+<div class="lo-nav">
+  <div class="lo-logo">beating<span>ai</span></div>
+  <button class="lo-close" onclick="closeLegal()">← Back to Site</button>
+</div>
+
+<!-- HERO -->
+<div class="lo-hero">
+  <div class="lo-eyebrow">Legal</div>
+  <h2 class="lo-title">Privacy Policy<br/><span>&</span> Terms of Service</h2>
+  <p class="lo-meta">Last updated: March 2026 &nbsp;·&nbsp; beatingai.net</p>
+</div>
+
+<!-- TABS -->
+<div class="lo-tabs">
+  <button class="lo-tab active" onclick="switchLegalTab('privacy',this)">🔒 Privacy Policy</button>
+  <button class="lo-tab" onclick="switchLegalTab('terms',this)">📋 Terms</button>
+  <button class="lo-tab" onclick="switchLegalTab('affiliate',this)">🔗 Partner Disclosure</button>
+  <button class="lo-tab" onclick="switchLegalTab('refund',this)">↩ Refunds</button>
+</div>
+
+<!-- ── PRIVACY POLICY ── -->
+<div class="lo-panel active" id="lo-privacy">
+  <div class="lo-highlight"><p><strong>The short version:</strong> beatingai takes your privacy seriously — because that's what we're built on. We collect only what we need to run this business, we never sell your personal data, and we never share it with AI companies for training purposes. Ever.</p></div>
+  <div class="lo-sec"><div class="lo-num">01</div><h3 class="lo-h">Who We Are</h3><p class="lo-p">beatingai is a privacy protection business operating at beatingai.net. We provide educational content, privacy products, digital guides, and curated partner recommendations to help individuals protect themselves from AI data harvesting and digital surveillance.</p><p class="lo-p">Questions about this policy? Contact us at <a href="/cdn-cgi/l/email-protection#ef9f9d86998e8c96af8d8a8e9b8681888e86c1818a9b"><span class="__cf_email__" data-cfemail="4636342f3027253f06242327322f2821272f68282332">[email&#160;protected]</span></a></p></div>
+  <div class="lo-sec"><div class="lo-num">08</div><h3 class="lo-h">Data Security</h3><p class="lo-p">All data transmitted between your browser and our website is encrypted using HTTPS/SSL. Payment data is handled exclusively by Stripe under PCI-DSS standards. No method of internet transmission is 100% secure — we encourage you to follow the privacy practices we teach on this site.</p></div>
+  <div class="lo-sec"><div class="lo-num">09</div><h3 class="lo-h">Children's Privacy</h3><p class="lo-p">beatingai is not directed at children under the age of 13. We do not knowingly collect personal data from children. Contact us if you believe a child has submitted information and we will delete it promptly.</p></div>
+  <div class="lo-sec"><div class="lo-num">10</div><h3 class="lo-h">Changes to This Policy</h3><p class="lo-p">We may update this Privacy Policy from time to time. When we do, we will update the date at the top of this page. Significant changes will be communicated to newsletter subscribers by email.</p></div>
+  <div class="lo-contact"><h3>Privacy Questions?</h3><p>We believe in transparency. If you have any questions about how we handle your data, we are happy to answer them directly.</p><a href="/cdn-cgi/l/email-protection#1e6e6c77687f7d675e7c7b7f6a7770797f7730707b6a"><span class="__cf_email__" data-cfemail="6515170c1304061c25070004110c0b02040c4b0b0011">[email&#160;protected]</span></a></div>
+</div>
+
+<!-- ── PARTNER DISCLOSURE ── -->
+<div class="lo-panel" id="lo-affiliate">
+  <div class="lo-highlight"><p><strong>Plain English version:</strong> Some links on beatingai.net are partner links. If you click one and make a purchase, we may receive a referral payment. This costs you nothing extra. We only recommend products we genuinely believe in — our recommendations are never influenced by whether a partner relationship exists.</p></div>
+  <div class="lo-sec"><div class="lo-num">01</div><h3 class="lo-h">What This Disclosure Covers</h3><p class="lo-p">In accordance with FTC guidelines and equivalent regulations in other jurisdictions, beatingai discloses any material connections between this website and the companies or products it recommends. This page is our full, transparent disclosure of all such relationships.</p></div>
+  <div class="lo-sec"><div class="lo-num">02</div><h3 class="lo-h">Partner Relationships</h3><p class="lo-p">beatingai participates in partner and referral programs with the following companies:</p><ul class="lo-ul"><li><strong>NordVPN</strong> — we may receive a referral payment when someone signs up through our link.</li><li><strong>Proton (ProtonMail)</strong> — we may receive a referral payment when someone creates an account through our link.</li><li><strong>1Password</strong> — we may receive a referral payment when someone subscribes through our link.</li><li><strong>DeleteMe</strong> — we may receive a referral payment when someone subscribes through our link.</li><li><strong>Yubico</strong> — we may receive a referral payment when someone purchases through our link.</li></ul><p class="lo-p">These relationships do not cost you anything additional. The price you pay is the same whether or not you use our link.</p></div>
+  <div class="lo-sec"><div class="lo-num">03</div><h3 class="lo-h">Our Recommendation Standards</h3><p class="lo-p">beatingai only recommends products we believe provide genuine privacy value. We will not recommend a product simply because a partner relationship exists, and we will not withhold a negative opinion to protect a commercial relationship. Our credibility is everything — we will never compromise it.</p></div>
+  <div class="lo-sec"><div class="lo-num">04</div><h3 class="lo-h">How to Identify Partner Links</h3><p class="lo-p">Partner links on beatingai.net are found in the Trusted Privacy Partners section of the homepage. If you prefer not to use a referral link, you can navigate directly to any company's website by typing their address into your browser.</p></div>
+  <div class="lo-sec"><div class="lo-num">05</div><h3 class="lo-h">Newsletter Disclosure</h3><p class="lo-p">The beatingai Weekly newsletter may mention products with which we have a partner relationship. Our editorial content — threat alerts, privacy tips, and news — is entirely independent and never influenced by commercial relationships.</p></div>
+  <div class="lo-contact"><h3>Questions About Our Partnerships?</h3><p>We believe in full transparency. Ask us anything about our partner relationships.</p><a href="/cdn-cgi/l/email-protection#18686a716e797b61587a7d796c71767f797136767d6c"><span class="__cf_email__" data-cfemail="41313328372022380123242035282f2620286f2f2435">[email&#160;protected]</span></a></div>
+</div>
+
+<!-- ── TERMS ── -->
+<div class="lo-panel" id="lo-terms">
+  <div class="lo-highlight"><p><strong>Plain English version:</strong> Use beatingai honestly and lawfully. We work hard to provide accurate, useful privacy information. In return, we ask you not to misuse the site or the trust we've built.</p></div>
+  <div class="lo-sec"><div class="lo-num">01</div><h3 class="lo-h">Acceptance</h3><p class="lo-p">By using beatingai.net you agree to these terms. If you do not agree, please do not use the site. We may update these terms from time to time — continued use of the site means you accept any changes.</p></div>
+  <div class="lo-sec"><div class="lo-num">02</div><h3 class="lo-h">Products</h3><p class="lo-p">beatingai operates as an affiliate and referral business. We link to third-party products and services and may earn a commission on qualifying purchases. We do not manufacture, warehouse, or ship any physical products directly. All physical product purchases are made directly with the relevant brand.</p></div>
+  <div class="lo-sec"><div class="lo-num">03</div><h3 class="lo-h">Acceptable Use</h3><p class="lo-p">You agree not to use beatingai.net to: distribute spam or malware, scrape content without permission, impersonate beatingai or its team, attempt to gain unauthorised access to any system, or use the site for any unlawful purpose.</p></div>
+  <div class="lo-sec"><div class="lo-num">04</div><h3 class="lo-h">Intellectual Property</h3><p class="lo-p">All content on beatingai.net — including text, design, code, and branding — is the property of beatingai. You may not copy, reproduce, or redistribute it without written permission.</p></div>
+  <div class="lo-sec"><div class="lo-num">05</div><h3 class="lo-h">Disclaimers</h3><p class="lo-p">Privacy information on this site is provided for educational purposes only and does not constitute legal advice. beatingai makes no guarantee that following any advice on this site will fully protect you from data harvesting or surveillance. You use this information at your own discretion.</p></div>
+  <div class="lo-sec"><div class="lo-num">06</div><h3 class="lo-h">Limitation of Liability</h3><p class="lo-p">To the fullest extent permitted by law, beatingai shall not be liable for any indirect, incidental, or consequential damages arising from your use of this site or any products linked from it.</p></div>
+  <div class="lo-sec"><div class="lo-num">07</div><h3 class="lo-h">Governing Law</h3><p class="lo-p">These terms are governed by the laws of the State of Delaware, United States. Any disputes shall be subject to the exclusive jurisdiction of the courts of the United States.</p></div>
+  <div class="lo-contact"><h3>Questions About Our Terms?</h3><p>If anything is unclear, get in touch and we will explain it plainly.</p><a href="/cdn-cgi/l/email-protection#f383819a8592908ab3919692879a9d94929add9d9687"><span class="__cf_email__" data-cfemail="2a5a58435c4b49536a484f4b5e43444d4b4304444f5e">[email&#160;protected]</span></a></div>
+</div>
+
+<!-- ── REFUNDS ── -->
+<div class="lo-panel" id="lo-refund">
+  <div class="lo-highlight"><p><strong>Plain English version:</strong> 30-day returns on physical products. No hassle. If something is wrong we will fix it.</p></div>
+  <div class="lo-sec"><div class="lo-num">01</div><h3 class="lo-h">Physical Products</h3><p class="lo-p">If you are not satisfied with a physical product, you may return it within <strong>30 days</strong> of the delivery date for a full refund. Return shipping is the customer's responsibility unless the product arrived damaged or defective, in which case we cover return shippi
