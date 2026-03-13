@@ -1,4 +1,4 @@
-const CACHE = 'beatingai-v18';
+const CACHE = 'beatingai-v19';
 
 const ASSETS = [
   './index.html',
