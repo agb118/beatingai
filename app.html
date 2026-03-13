@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="beatingai"/>
+<meta name="theme-color" content="#00e87a"/>
+<meta name="description" content="Your data. Your rules. Not theirs."/>
+<link rel="manifest" href="manifest.json"/>
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAdeklEQVR4nO3debRdZXn48WffKTfzJElQRgkJQ5C5UcBAZVDRwlKpCCIiMqiA+kNrUbGCVKuidAEt1WJBEUUs2IKVMghIkBSkoGAYk8goQ4DcJGa+957z+yNCRQJkOOfsfe/z+azFIiyz3vfJcufs7z1nn72Lrq7uegAAqbSVPQAA0HoCAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAA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js9cG20/auwjgvuP2zX6T927Yet17Xjehj8O+c+smn1CxKghDV2z0bo2O6vsEQY8AZBAd3d3bLvN1JgyZXJMnTI5tt56q5g0cWIMHzE8RgwfHiNGjIghQ7pi+fIVsWTp0li6ZEks6FkY8+b9Lh6cMy/mzJkXd93925g//5my/yg0WSUC4Hmr+qPtvx6ItiseiLZbHo1YtQF3kRw5JGpv2iRqB24dtXdOjehyO+KBTgBsOAEAvKBSAfCnlvZG2x1PRHHXU1Hc90wUjy+OeGpJFEtWRazoW/17hnZGfXhnxPCuqG8yKupbjonYcmzU3jAp6jtNimgvSv0j0FgCYMN5GiBQfcM7ozZj84gZm5c9CQwaLgIEgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAOAFnrDGQOA4bQwBAAAJCQAASEgAAC/i7VWqzPHZOAIAABISAMBL+CmLKnJcNpYAAICEBACwRn7aokocj40nAICX5UWXKnAcNocAAF6RF1/K5PhrHgEAvCovwpTBcddcAgBYK16MaSXHW/MJAGCteVGmFRxnrVF0dXXXyx4CGHhWPXpy2SMwyDjxt5YAADaIEGBDOfGXQwAADSMGWFtO+uUTAACQkIsAASAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBC/x/2elR8iRO3bQAAAABJRU5ErkJggg=="/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<title>beatingai</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --black:#060608;--white:#eeebe4;--green:#00e87a;--red:#ff3c3c;
+  --mid:#111115;--dim:#1e1e24;--muted:#666672;--border:rgba(255,255,255,0.07);
+  --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
+}
+html,body{height:100%;overflow:hidden;background:var(--black);}
+body{font-family:"Space Mono",monospace;color:var(--white);display:flex;flex-direction:column;}
+.install-banner{background:var(--green);color:var(--black);padding:.7rem 1.2rem;display:flex;align-items:center;justify-content:space-between;font-size:.6rem;letter-spacing:.05em;flex-shrink:0;}
+.install-btn{background:var(--black);color:var(--green);border:none;font-family:"Space Mono",monospace;font-size:.55rem;font-weight:700;letter-spacing:.1em;padding:.4rem .9rem;cursor:pointer;}
+.install-close{background:none;border:none;color:rgba(6,6,8,.6);font-size:1.1rem;cursor:pointer;padding:0 .3rem;line-height:1;}
+.topbar{background:rgba(6,6,8,.96);backdrop-filter:blur(20px);padding:calc(var(--safe-top) + 10px) 18px 10px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);flex-shrink:0;z-index:100;}
+.logo{font-family:"Syne",sans-serif;font-weight:800;font-size:1.35rem;letter-spacing:-.03em;}
+.logo span{color:var(--green);}
+.main{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(72px + var(--safe-bottom));scrollbar-width:none;}
+.main::-webkit-scrollbar{display:none;}
+.bottomnav{position:fixed;bottom:0;left:0;right:0;background:rgba(6,6,8,.97);backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;padding-bottom:var(--safe-bottom);z-index:100;}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.65rem .4rem;background:none;border:none;color:var(--muted);font-family:"Space Mono",monospace;font-size:.5rem;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;gap:.3rem;transition:color .2s;position:relative;}
+.nav-item.active{color:var(--green);}
+.nav-item svg{width:17px;height:17px;stroke-width:1.5;stroke:currentColor;fill:none;}
+.nav-dot{position:absolute;top:4px;right:calc(50% - 13px);width:6px;height:6px;background:var(--red);border-radius:50%;border:1.5px solid var(--black);}
+.screen{display:none;}
+.screen.active{display:block;animation:fadeIn .22s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:none;}}
+.eyebrow{font-family:"Space Mono",monospace;font-size:.55rem;letter-spacing:.2em;color:var(--green);margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem;}
+.eyebrow::before{content:"";width:10px;height:1px;background:var(--green);}
+.sec-title{font-family:"Syne",sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:-.02em;color:var(--white);margin-bottom:.8rem;}
+.btn-green{background:var(--green);color:var(--black);border:none;font-family:"Space Mono",monospace;font-size:.6rem;font-weight:700;letter-spacing:.1em;padding:.9rem;cursor:pointer;width:100%;}
+.btn-outline{background:none;color:var(--white);border:1px solid var(--border);font-family:"Space Mono",monospace;font-size:.6rem;letter-spacing:.1em;padding:.9rem;cursor:pointer;width:100%;}
+.hero{padding:1.5rem 1.2rem 1.2rem;background:linear-gradient(180deg,#0a0a0f,var(--black));border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,232,122,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,232,122,.025) 1px,transparent 1px);background-size:26px 26px;pointer-events:none;}
+.hero h1{font-family:"Syne",sans-serif;font-weight:800;font-size:1.9rem;line-height:.95;letter-spacing:-.03em;margin-bottom:.6rem;}
+.hero h1 span{color:var(--green);}
+.hero p{font-family:"Space Mono",monospace;font-size:.6rem;color:var(--muted);line-height:1.7;margin-bottom:.9rem;}
+.counter-box{background:var(--mid);border:1px solid var(--border);padding:.7rem 1rem;display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem;}
+.counter-label{font-family:"Space Mono",monospace;font-size:.5rem;letter-spacing:.1em;color:var(--muted);margin-bottom:.2rem;}
+.counter-num{font-family:"Space Mono",monospace;font-size:1rem;font-weight:700;color:var(--red);}
+.hero-btns{display:flex;gap:.6rem;}
+.hero-btns .btn-green,.hero-btns .btn-outline{flex:1;padding:.75rem;}
+.daily-threat{margin:.9rem 1rem 0;background:var(--mid);border:1px solid var(--border);overflow:hidden;}
+.dt-head{background:var(--red);padding:.5rem 1rem;display:flex;align-items:center;justify-content:space-between;}
+.dt-head-label{font-family:"Space Mono",monospace;font-size:.55rem;font-weight:700;letter-spacing:.12em;color:#fff;}
+.dt-head-date{font-family:"Space Mono",monospace;font-size:.5rem;color:rgba(255,255,255,.65);}
+.dt-body{padding:.8rem 1rem;}
+.dt-name{font-family:"Syne",sans-serif;font-size:.85rem;font-weight:800;color:var(--white);margin-bottom:.3rem;line-height:1.2;}
+.dt-text{font-family:"Space Mono",monospace;font-size:.55rem;color:#888;line-height:1.65;margin-bottom:.5rem;}
+.dt-source{font-family:"Space Mono",monospace;font-size:.5rem;color:var(--red);letter-spacing:.08em;}
+.dt-actions{display:flex;gap:.5rem;padding:.7rem 1rem;border-top:1px solid rgba(255,255,255,.05);}
+.dt-btn{flex:1;font-family:"Space Mono",monospace;font-size:.55rem;font-weight:700;letter-spacing:.07em;padding:.5rem;cursor:pointer;text-align:center;}
+.dt-btn-red{background:rgba(255,60,60,.1);color:var(--red);border:1px solid rgba(255,60,60,.2);}
+.dt-btn-green{background:rgba(0,232,122,.1);color:var(--green);border:1px solid rgba(0,232,122,.2);}
+.score-preview{padding:.9rem 1rem;}
+.score-card{background:var(--mid);border:1px solid var(--border);padding:1rem;}
+.score-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem;}
+.score-card-title{font-family:"Syne",sans-serif;font-size:.95rem;font-weight:800;color:var(--white);}
+.score-live-badge{font-family:"Space Mono",monospace;font-size:.5rem;letter-spacing:.1em;color:var(--green);border:1px solid rgba(0,232,122,.3);padding:.2rem .5rem;}
+.ring-wrap{display:flex;justify-content:center;position:relative;margin-bottom:.8rem;}
+.ring-wrap svg{transform:rotate(-90deg);}
+.ring-bg{fill:none;stroke:var(--dim);stroke-width:7;}
+.ring-fg{fill:none;stroke:var(--green);stroke-width:7;stroke-linecap:round;transition:stroke-dashoffset .9s ease;}
+.ring-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;}
+.ring-num{font-family:"Syne",sans-serif;font-size:1.4rem;font-weight:800;display:block;line-height:1;}
+.ring-denom{font-family:"Space Mono",monospace;font-size:.5rem;color:var(--muted);}
+.score-grade{text-align:center;margin-bottom:.8rem;}
+.score-grade-label{font-family:"Syne",sans-serif;font-size:.85rem;font-weight:700;color:var(--green);}
+.score-grade-sub{font-family:"Space Mono",monospace;font-size:.5rem;color:var(--muted);margin-top:.2rem;}
+.score-bars{display:flex;flex-direction:column;gap:.5rem;margin-bottom:.8rem;}
+.score-bar-row{display:flex;align-items:center;gap:.6rem;}
+.score-bar-label{font-family:"Space Mono",monospace;font-size:.5rem;color:#888;width:72px;flex-shrink:0;}
+.score-bar-track{flex:1;height:4px;background:var(--dim);border-radius:2px;overflow:hidden;}
+.score-bar-fill{height:100%;border-radius:2px;transition:width .9s ease;}
+.score-bar-val{font-family:"Space Mono",monospace;font-size:.5rem;color:var(--white);width:18px;text-align:right;flex-shrink:0;}
+.improve-btn{width:100%;background:none;border:1px solid rgba(0,232,122,.3);color:var(--green);font-family:"Space Mono",monospace;font-size:.55rem;font-weight:700;letter-spacing:.1em;padding:.65rem;cursor:pointer;}
+.challenge-wrap{padding:0 1rem .9rem;}
+.challenge-card{background:var(--mid);border:1px solid var(--border);overflow:hidden;}
+.ch-head{background:linear-gradient(90deg,#003820,#005030);padding:.65rem 1rem;display:flex;align-items:center;justify-content:space-between;}
+.ch-head-left{display:flex;align-items:center;gap:.5rem;}
+.ch-icon{font-size:1rem;}
+.ch-label{font-family:"Space Mono",monospace;font-size:.55rem;font-weight:700;letter-spacing:.1em;color:var(--green);text-transform:uppercase;}
+.ch-week{font-family:"Space Mono",monospace;font-size:.5rem;color:rgba(0,232,122,.5);}
+.ch-streak-box{background:rgba(0,232,122,.12);border:1px solid rgba(0,232,122,.22);padding:.3rem .6rem;display:flex;align-items:center;gap:.35rem;}
+.ch-streak-num{font-family:"Syne",sans-serif;font-size:.95rem;font-weight:800;color:var(--green);}
+.ch-streak-label{font-family:"Space Mono",monospace;font-size:.45rem;color:rgba(0,232,122,.55);line-height:1.3;}
+.ch-body{padding:.85rem 1rem;}
+.ch-title{font-family:"Syne",sans-serif;font-size:.9rem;font-weight:800;color:var(--white);margin-bottom:.3rem;}
+.ch-desc{font-family:"Space Mono",monospace;font-size:.55rem;color:#888;line-height:1.65;margin-bottom:.7rem;}
+.ch-steps{display:flex;flex-direction:column;gap:.4rem;margin-bottom:.7rem;}
+.ch-step{display:flex;align-items:flex-start;gap:.55rem;padding:.5rem .65rem;background:var(--dim);cursor:pointer;}
+.ch-step.done{background:rgba(0,232,122,.07);border-left:2px solid var(--green);}
+.ch-check{width:13px;height:13px;border:1.5px solid #444;border-radius:2px;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+.ch-step.done .ch-check{background:var(--green);border-color:var(--green);}
+.ch-step-text{font-family:"Space Mono",monospace;font-size:.55rem;color:#888;line-height:1.5;flex:1;}
+.ch-step.done .ch-step-text{color:var(--green);}
+.ch-progress-wrap{margin-bottom:.7rem;}
+.ch-progress-labels{display:flex;justify-content:space-between;font-family:"Space Mono",monospace;font-size:.5rem;color:#444;margin-bottom:.3rem;}
+.ch-progress-track{height:3px;background:var(--dim);border-radius:2px;overflow:hidden;}
+.ch-progress-fill{height:100%;background:var(--green);border-radius:2px;transition:width .4s ease;}
+.ch-complete-btn{width:100%;background:var(--green);color:var(--black);border:none;font-family:"Space Mono",monospace;font-size:.6rem;font-weight:700;letter-spacing:.1em;padding:.75rem;cursor:pointer;}
+.ch-complete-btn:disabled{background:var(--dim);color:#333;cursor:default;}
+.threats-section{padding:.9rem 1rem 0;}
+.threats-grid{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;}
+.threat-card{background:var(--mid);border-top:2px solid var(--red);padding:.75rem;}
+.threat-icon{font-size:1.1rem;margin-bottom:.3rem;}
+.threat-name{font-family:"Syne",sans-serif;font-size:.7rem;font-weight:700;color:var(--white);margin-bottom:.2rem;}
+.threat-desc{font-family:"Space Mono",monospace;font-size:.5rem;color:var(--muted);line-height:1.5;}
+.stats-strip{background:var(--green);padding:1.2rem;display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-top:.9rem;}
+.stat-item{text-align:center;}
+.stat-num{font-family:"Syne",sans-serif;font-size:1.35rem;font-weight:800;color:var(--black);}
+.stat-label{font-family:"Space Mono",monospace;font-size:.5rem;color:rgba(6,6,8,.55);letter-spacing:.06em;margin-top:.2rem;}
+.products-list{padding:.9rem 1rem;display:flex;flex-direction:column;gap:.7rem;}
+.product-card{background:var(--mid);border:1px solid var(--border);padding:1rem;display:flex;gap:.8rem;}
+.product-icon{font-size:1.5rem;width:44px;height:44px;background:var(--dim);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.product-info{flex:1;min-width:0;}
+.product-name{font-family:"Syne",sans-serif;font-size:.85rem;font-weight:700;color:var(--white);margin-bottom:.25rem;}
+.product-desc{font-family:"Space Mono",monospace;font-size:.5rem;color:var(--muted);line-height:1.6;margin-bottom:.55rem;}
+.product-footer{display:flex;align-items:center;justify-content:space-between;}
+.btn-shop-link{background:var(--green);color:var(--black);border:none;font-family:"Space Mono",monospace;font-size:.5rem;font-weight:700;letter-spacing:.07em;padding:.45rem .8rem;cursor:pointer;}
+.engage-wrap{padding:.9rem 1rem;}
+.full-score-card{background:var(--mid);border:1px solid var(--border);padding:1rem;margin-bottom:.9rem;}
+.score-toggles{display:flex;flex-direction:column;gap:.45rem;margin-top:.7rem;}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:.55rem .8rem;background:var(--dim);}
+.toggle-label{font-family:"Space Mono",monospace;font-size:.55rem;color:#888;}
+.toggle-switch{width:28px;height:14px;background:#2a2a2a;border-radius:7px;cursor:pointer;position:relative;transition:background .25s;flex-shrink:0;}
+.toggle-switch.on{background:var(--green);}
+.toggle-switch::after{content:"";position:absolute;top:2px;left:2px;width:10px;height:10px;background:#fff;border-radius:50%;transition:left .25s;}
+.toggle-switch.on::after{left:16px;}
+.past-challenges{margin-top:.4rem;}
+.past-item{display:flex;align-items:center;gap:.7rem;padding:.6rem .8rem;background:var(--mid);border:1px solid var(--border);margin-bottom:.4rem;}
+.past-check{font-size:1rem;}
+.past-info{flex:1;}
+.past-title{font-family:"Syne",sans-serif;font-size:.75rem;font-weight:700;color:var(--white);}
+.past-date{font-family:"Space Mono",monospace;font-size:.5rem;color:#444;}
+.past-pts{font-family:"Space Mono",monospace;font-size:.65rem;font-weight:700;color:var(--green);}
+.partners-intro{padding:1rem 1rem .5rem;}
+.partners-list{padding:.4rem 1rem 1rem;display:flex;flex-direction:column;gap:.7rem;}
+.partner-card{background:var(--mid);border:1px solid var(--border);padding:1rem;}
+.partner-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem;}
+.partner-name{font-family:"Syne",sans-serif;font-size:1rem;font-weight:800;color:var(--white);}
+.partner-tag{font-family:"Space Mono",monospace;font-size:.45rem;letter-spacing:.08em;color:var(--green);border:1px solid rgba(0,232,122,.25);padding:.2rem .5rem;text-transform:uppercase;}
+.partner-desc{font-family:"Space Mono",monospace;font-size:.55rem;color:var(--muted);line-height:1.65;margin-bottom:.75rem;}
+.partner-link{display:block;background:none;border:1px solid var(--border);color:var(--white);font-family:"Space Mono",monospace;font-size:.55rem;letter-spacing:.08em;text-transform:uppercase;padding:.65rem;text-align:center;text-decoration:none;width:100%;cursor:pointer;}
+.blog-wrap{padding:1rem;}
+.blog-post-card{background:var(--mid);border:1px solid var(--dim);padding:1.2rem;margin-bottom:1rem;border-radius:0;}
+.blog-post-tag{font-family:"Space Mono",monospace;font-size:.5rem;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:.5rem;}
+.blog-post-title{font-family:"Syne",sans-serif;font-weight:700;font-size:1rem;line-height:1.3;margin-bottom:.5rem;}
+.blog-post-excerpt{font-family:"Space Mono",monospace;font-size:.55rem;color:var(--muted);line-height:1.7;margin-bottom:.8rem;}
+.blog-post-content{font-family:"Space Mono",monospace;font-size:.55rem;color:rgba(238,235,228,.7);line-height:1.8;display:none;}
+.blog-post-content.open{display:block;}
+.blog-post-content p{margin-bottom:.7rem;}
+.blog-post-content h4{color:var(--white);font-family:"Syne",sans-serif;font-size:.8rem;margin:.8rem 0 .3rem;}
+.blog-post-content ul{padding-left:1rem;margin-bottom:.7rem;}
+.blog-post-content ul li{margin-bottom:.3rem;}
+.blog-read-btn{font-family:"Space Mono",monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--green);background:none;border:1px solid var(--green);padding:.4rem .8rem;cursor:pointer;}
+.more-wrap{padding:1rem;}
+.about-block{background:var(--mid);border:1px solid var(--border);padding:1rem;margin-bottom:.55rem;}
+.about-block-title{font-family:"Syne",sans-serif;font-size:.85rem;font-weight:700;color:var(--white);margin-bottom:.4rem;}
+.about-block-text{font-family:"Space Mono",monospace;font-size:.55rem;color:var(--muted);line-height:1.65;}
+.legal-tab-row{display:flex;gap:1px;background:var(--dim);}
+.legal-tab{flex:1;font-family:"Space Mono",monospace;font-size:.45rem;letter-spacing:.06em;text-transform:uppercase;padding:.65rem .3rem;background:var(--black);border:none;color:var(--muted);cursor:pointer;text-align:center;border-bottom:2px solid transparent;transition:all .2s;}
+.legal-tab.active{color:var(--green);border-bottom-color:var(--green);}
+.legal-panel{display:none;padding:.8rem 0;}
+.legal-panel.active{display:block;}
+.legal-item{margin-bottom:.9rem;padding-bottom:.9rem;border-bottom:1px solid var(--dim);}
+.legal-item:last-child{border:none;}
+.legal-num{font-family:"Space Mono",monospace;font-size:.5rem;letter-spacing:.15em;color:var(--green);margin-bottom:.25rem;}
+.legal-h{font-family:"Syne",sans-serif;font-size:.8rem;font-weight:700;color:var(--white);margin-bottom:.35rem;}
+.legal-b{font-family:"Space Mono",monospace;font-size:.55rem;color:var(--muted);line-height:1.65;}
+.legal-highlight{background:var(--mid);border-left:2px solid var(--green);padding:.75rem .9rem;margin-bottom:.9rem;}
+.legal-highlight p{font-family:"Space Mono",monospace;font-size:.55rem;color:rgba(238,235,228,.7);line-height:1.65;}
+.qty-btn{background:var(--dim);border:none;color:var(--white);width:22px;height:22px;cursor:pointer;font-size:.85rem;display:flex;align-items:center;justify-content:center;}
+.qty-num{font-family:"Space Mono",monospace;font-size:.6rem;min-width:14px;text-align:center;}
+.toast{position:fixed;bottom:calc(82px + var(--safe-bottom));left:50%;transform:translateX(-50%) translateY(12px);background:var(--green);color:var(--black);font-family:"Space Mono",monospace;font-size:.6rem;font-weight:700;letter-spacing:.08em;padding:.6rem 1.3rem;z-index:500;opacity:0;transition:opacity .25s,transform .25s;white-space:nowrap;pointer-events:none;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+@keyframes pop{0%{transform:scale(1);}50%{transform:scale(1.25);}100%{transform:scale(1);}}
+.pop{animation:pop .35s ease;}
+</style>
+</head>
+<body>
+
+<div class="install-banner" id="installBanner" style="display:none;">
+  <span>Add beatingai to your home screen</span>
+  <div style="display:flex;gap:.5rem;align-items:center;">
+    <button class="install-btn" id="installBtn">Install</button>
+    <button class="install-close" onclick="document.getElementById('installBanner').style.display='none'">x</button>
+  </div>
+</div>
+
+<div class="topbar">
+  <div class="logo">beating<span>ai</span></div>
+  
+</div>
+
+<div class="main" id="main">
+
+  <div class="screen active" id="screen-home">
+    <div class="hero">
+      <div class="hero-grid"></div>
+      <div class="eyebrow">Privacy Protection</div>
+      <h1>Your data.<br/>Your rules.<br/><span>Not theirs.</span></h1>
+      <p>AI companies harvest your face, voice, and behaviour every day. beatingai gives you the tools to fight back.</p>
+      <div class="counter-box">
+        <div><div class="counter-label">PROFILES BUILT BY AI TODAY</div><div class="counter-num" id="threatCounter">2,847,293,041</div></div>
+        <div style="font-size:1.4rem">🔴</div>
+      </div>
+      <div class="hero-btns">
+        <button class="btn-green" onclick="switchTab('shop')">SHOP NOW</button>
+        <button class="btn-outline" onclick="switchTab('engage')">MY SCORE</button>
+      </div>
+    </div>
+
+    <div class="daily-threat">
+      <div class="dt-head"><span class="dt-head-label">🚨 Daily Threat Alert</span><span class="dt-head-date" id="dtDate"></span></div>
+      <div class="dt-body"><div class="dt-name" id="dtName"></div><div class="dt-text" id="dtText"></div><div class="dt-source" id="dtSource"></div></div>
+      <div class="dt-actions"><span class="dt-btn" style="color:var(--muted);font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.1em;">UPDATES DAILY</span></div>
+    </div>
+
+    <div class="score-preview">
+      <div class="score-card">
+        <div class="score-card-top"><div class="score-card-title">Your Privacy Score</div><div class="score-live-badge">LIVE</div></div>
+        <div class="ring-wrap">
+          <svg width="90" height="90" viewBox="0 0 90 90"><circle class="ring-bg" cx="45" cy="45" r="36"/><circle class="ring-fg" id="scoreRingHome" cx="45" cy="45" r="36" stroke-dasharray="226" stroke-dashoffset="170"/></svg>
+          <div class="ring-center"><span class="ring-num" id="scoreNumHome">25</span><span class="ring-denom">/100</span></div>
+        </div>
+        <div class="score-grade"><div class="score-grade-label" id="scoreGradeHome">AT RISK</div><div class="score-grade-sub" id="scoreGradeSubHome">Complete challenges to improve your score</div></div>
+        <div class="score-bars">
+          <div class="score-bar-row"><div class="score-bar-label">Device Security</div><div class="score-bar-track"><div class="score-bar-fill" id="bar1" style="width:20%;background:#ff3c3c"></div></div><div class="score-bar-val" id="bv1">20</div></div>
+          <div class="score-bar-row"><div class="score-bar-label">Online Privacy</div><div class="score-bar-track"><div class="score-bar-fill" id="bar2" style="width:30%;background:#ff9500"></div></div><div class="score-bar-val" id="bv2">30</div></div>
+          <div class="score-bar-row"><div class="score-bar-label">Data Exposure</div><div class="score-bar-track"><div class="score-bar-fill" id="bar3" style="width:15%;background:#ff3c3c"></div></div><div class="score-bar-val" id="bv3">15</div></div>
+          <div class="score-bar-row"><div class="score-bar-label">Communications</div><div class="score-bar-track"><div class="score-bar-fill" id="bar4" style="width:35%;background:#00e87a"></div></div><div class="score-bar-val" id="bv4">35</div></div>
+        </div>
+        <button class="improve-btn" onclick="switchTab('engage')">IMPROVE MY SCORE →</button>
+      </div>
+    </div>
+
+    <div class="challenge-wrap">
+      <div class="challenge-card">
+        <div class="ch-head">
+          <div class="ch-head-left"><div class="ch-icon">🎯</div><div><div class="ch-label">This Week's Challenge</div><div class="ch-week" id="challengeWeekHome"></div></div></div>
+          <div class="ch-streak-box"><div class="ch-streak-num" id="streakHome">0</div><div class="ch-streak-label">week<br/>streak</div></div>
+        </div>
+        <div class="ch-body">
+          <div class="ch-title" id="chTitleHome"></div>
+          <div class="ch-desc" id="chDescHome"></div>
+          <div class="ch-steps" id="chStepsHome"></div>
+          <div class="ch-progress-wrap"><div class="ch-progress-labels"><span>Progress</span><span id="chProgressTextHome">0 of 3 steps</span></div><div class="ch-progress-track"><div class="ch-progress-fill" id="chProgressFillHome" style="width:0%"></div></div></div>
+          <button class="ch-complete-btn" id="chCompleteBtnHome" disabled onclick="completeChallenge()">COMPLETE CHALLENGE (+15 PTS)</button>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="stats-strip">
+      <div class="stat-item"><div class="stat-num">4.7B</div><div class="stat-label">People Profiled</div></div>
+      <div class="stat-item"><div class="stat-num">$450B</div><div class="stat-label">Data Industry</div></div>
+      <div class="stat-item"><div class="stat-num">87%</div><div class="stat-label">Apps Share Data</div></div>
+      <div class="stat-item"><div class="stat-num">0</div><div class="stat-label">Days to Start</div></div>
+    </div>
+    <div style="padding:1.2rem 1rem"><button class="btn-green" onclick="switchTab('shop')">BROWSE PRIVACY TOOLS →</button></div>
+  </div>
+
+  <div class="screen" id="screen-shop">
+    <div style="padding:1rem 1rem .4rem"><div class="eyebrow">Privacy Shop</div><div class="sec-title" style="margin-bottom:0">Protection Starts Here</div></div>
+    
+    <div class="products-list" id="physical-products">
+      <div class="product-card"><div class="product-icon">📱</div><div class="product-info"><div class="product-name">Silent Pocket Faraday Bag</div><div class="product-desc">Silent Pocket's military-grade Faraday bags block all signals — GPS, 5G, WiFi, and Bluetooth. Independently tested.</div><div class="product-footer"><a class="btn-shop-link" href="https://silentpocket.com?ref=beatingai" target="_blank">Shop Silent Pocket →</a></div></div></div>
+      <div class="product-card"><div class="product-icon">👓</div><div class="product-info"><div class="product-name">Reflectacles Anti-FR Glasses</div><div class="product-desc">Reflectacles patented IR frames disrupt AI facial recognition cameras while looking completely normal.</div><div class="product-footer"><a class="btn-shop-link" href="https://reflectacles.com?ref=beatingai" target="_blank">Shop Reflectacles →</a></div></div></div>
+      <div class="product-card"><div class="product-icon">💻</div><div class="product-info"><div class="product-name">CloudValley Webcam Cover</div><div class="product-desc">Ultra-thin metal sliding webcam cover. Fits laptops, MacBooks, phones and tablets. No software. Just blocks.</div><div class="product-footer"><a class="btn-shop-link" href="https://www.amazon.com/dp/B079MCPJGH?tag=beatingai-20" target="_blank">Shop on Amazon →</a></div></div></div>
+      <div class="product-card"><div class="product-icon">💾</div><div class="product-info"><div class="product-name">Apricorn Encrypted Drive</div><div class="product-desc">Encrypted storage that never connects to the internet. Your most sensitive files, truly offline.</div><div class="product-footer"><a class="btn-shop-link" href="https://apricorn.com?ref=beatingai" target="_blank">Shop Apricorn →</a></div></div></div>
+      <div class="product-card"><div class="product-icon">🏠</div><div class="product-info"><div class="product-name">Firewalla Smart Blocker</div><div class="product-desc">Plugs into your router and blocks unauthorized data transmissions from smart devices automatically.</div><div class="product-footer"><a class="btn-shop-link" href="https://firewalla.com?ref=beatingai" target="_blank">Shop Firewalla →</a></div></div></div>
+      <div class="product-card"><div class="product-icon">👛</div><div class="product-info"><div class="product-name">Ekster RFID Blocking Wallet</div><div class="product-desc">Ekster's slim aluminium wallet blocks all RFID and NFC skimming. Tested against all known skimming frequencies.</div><div class="product-footer"><a class="btn-shop-link" href="https://ekster.com?ref=beatingai" target="_blank">Shop Ekster →</a></div></div></div>
+    <div class="product-card"><div class="product-icon">🔑</div><div class="product-info"><div class="product-name">Yubico Security Key</div><div class="product-desc">The world's most trusted hardware security key. Stops 99.9% of automated account takeovers. Works with 700+ services.</div><div class="product-footer"><a class="btn-shop-link" href="https://yubico.com?ref=beatingai" target="_blank">Shop Yubico →</a></div></div></div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-engage">
+    <div class="engage-wrap">
+      <div class="eyebrow">My Privacy Hub</div>
+      <div class="sec-title">Score and Challenges</div>
+      <div class="full-score-card">
+        <div class="score-card-top"><div class="score-card-title">Privacy Score</div><div class="score-live-badge">LIVE</div></div>
+        <div class="ring-wrap">
+          <svg width="90" height="90" viewBox="0 0 90 90"><circle class="ring-bg" cx="45" cy="45" r="36"/><circle class="ring-fg" id="scoreRingEngage" cx="45" cy="45" r="36" stroke-dasharray="226" stroke-dashoffset="170"/></svg>
+          <div class="ring-center"><span class="ring-num" id="scoreNumEngage">25</span><span class="ring-denom">/100</span></div>
+        </div>
+        <div class="score-grade"><div class="score-grade-label" id="scoreGradeEngage">AT RISK</div><div class="score-grade-sub" id="scoreGradeSubEngage">Tap what you have set up below to update your score</div></div>
+        <div style="font-family:'Space Mono',monospace;font-size:.5rem;color:#444;margin-bottom:.5rem;letter-spacing:.1em">TAP EACH ONE YOU HAVE SET UP</div>
+        <div class="score-toggles">
+          <div class="toggle-row"><div class="toggle-label">Using a VPN (e.g. NordVPN)</div><div class="toggle-switch" id="tog0" onclick="toggleScore(0,15)"></div></div>
+          <div class="toggle-row"><div class="toggle-label">Private email (ProtonMail etc)</div><div class="toggle-switch" id="tog1" onclick="toggleScore(1,15)"></div></div>
+          <div class="toggle-row"><div class="toggle-label">Password manager active</div><div class="toggle-switch" id="tog2" onclick="toggleScore(2,10)"></div></div>
+          <div class="toggle-row"><div class="toggle-label">2FA on all accounts</div><div class="toggle-switch" id="tog3" onclick="toggleScore(3,15)"></div></div>
+          <div class="toggle-row"><div class="toggle-label">Deleted Google location history</div><div class="toggle-switch" id="tog4" onclick="toggleScore(4,10)"></div></div>
+          <div class="toggle-row"><div class="toggle-label">Data broker opt-outs done</div><div class="toggle-switch" id="tog5" onclick="toggleScore(5,10)"></div></div>
+        </div>
+      </div>
+      <div class="sec-title" style="font-size:.95rem;margin-bottom:.6rem">This Week's Challenge</div>
+      <div class="challenge-card" style="margin-bottom:.9rem">
+        <div class="ch-head">
+          <div class="ch-head-left"><div class="ch-icon">🎯</div><div><div class="ch-label">Active Challenge</div><div class="ch-week" id="challengeWeekEngage"></div></div></div>
+          <div class="ch-streak-box"><div class="ch-streak-num" id="streakEngage">0</div><div class="ch-streak-label">week<br/>streak</div></div>
+        </div>
+        <div class="ch-body">
+          <div class="ch-title" id="chTitleEngage"></div>
+          <div class="ch-desc" id="chDescEngage"></div>
+          <div class="ch-steps" id="chStepsEngage"></div>
+          <div class="ch-progress-wrap"><div class="ch-progress-labels"><span>Progress</span><span id="chProgressTextEngage">0 of 3 steps</span></div><div class="ch-progress-track"><div class="ch-progress-fill" id="chProgressFillEngage" style="width:0%"></div></div></div>
+          <button class="ch-complete-btn" id="chCompleteBtnEngage" disabled onclick="completeChallenge()">COMPLETE CHALLENGE (+15 PTS)</button>
+        </div>
+      </div>
+      <div class="sec-title" style="font-size:.95rem;margin-bottom:.6rem">Past Challenges</div>
+      <div class="past-challenges" id="pastChallengesWrap"></div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-partners">
+    <div class="partners-intro">
+      <div class="eyebrow">Trusted Partners</div>
+      <div class="sec-title">Why We Work With Affiliates</div>
+      <p style="font-family:'Space Mono',monospace;font-size:.6rem;color:var(--muted);line-height:1.7;margin-bottom:1rem">Most privacy businesses buy cheap products, mark them up, and sell them to you. We chose a different model.</p>
+      <div style="display:flex;flex-direction:column;gap:.6rem;margin-bottom:1rem">
+        <div style="padding:.8rem .9rem;background:var(--mid);border-left:2px solid var(--green)">
+          <div style="font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;color:var(--white);margin-bottom:.3rem">01 — We Never Touch the Price</div>
+          <p style="font-family:'Space Mono',monospace;font-size:.55rem;color:var(--muted);line-height:1.65">Affiliate links mean you always pay the original retail price. No markups. No upsells. Ever.</p>
+        </div>
+        <div style="padding:.8rem .9rem;background:var(--mid);border-left:2px solid var(--green)">
+          <div style="font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;color:var(--white);margin-bottom:.3rem">02 — We Only Recommend What We Use</div>
+          <p style="font-family:'Space Mono',monospace;font-size:.55rem;color:var(--muted);line-height:1.65">Every product here has been tested by us personally. If we would not use it ourselves, it does not appear here.</p>
+        </div>
+        <div style="padding:.8rem .9rem;background:var(--mid);border-left:2px solid var(--green)">
+          <div style="font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;color:var(--white);margin-bottom:.3rem">03 — People Before Profit</div>
+          <p style="font-family:'Space Mono',monospace;font-size:.55rem;color:var(--muted);line-height:1.65">Without the trust of the people who support us, beatingai is nothing. That principle shapes every decision we make.</p>
+        </div>
+        <div style="padding:.8rem .9rem;background:var(--mid);border-left:2px solid var(--green)">
+          <div style="font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;color:var(--white);margin-bottom:.3rem">04 — You Shape What We Feature</div>
+          <p style="font-family:'Space Mono',monospace;font-size:.55rem;color:var(--muted);line-height:1.65">We are not locked into inventory or suppliers. If you know a product that belongs here, tell us. We are always listening.</p>
+        </div>
+      </div>
+      <div style="font-family:'Space Mono',monospace;font-size:.5rem;color:var(--muted);line-height:1.65;padding:.7rem .8rem;border:1px solid rgba(255,255,255,.07);border-left:2px solid rgba(0,232,122,.3);margin-bottom:.5rem">Disclosure: Links below are affiliate links. If you purchase through them we may earn a small commission at no extra cost to you.</div>
+    </div>
+    <div class="partners-list">
+      <div class="partner-card"><div class="partner-header"><div class="partner-name">NordVPN</div><div class="partner-tag">Top Rated VPN</div></div><div class="partner-desc">Encrypts your internet connection and hides your online activity. Verified no-log policy, independently audited.</div><a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=143059&url_id=902" target="_blank" class="partner-link">Get NordVPN →</a></div>
+      <div class="partner-card"><div class="partner-header"><div class="partner-name">ProtonMail</div><div class="partner-tag">Encrypted Email</div></div><div class="partner-desc">End-to-end encrypted email based in Switzerland. Cannot be read by anyone including Proton. Free to start.</div><a href="https://proton.me" target="_blank" class="partner-link">Get ProtonMail →</a></div>
+      <div class="partner-card"><div class="partner-header"><div class="partner-name">1Password</div><div class="partner-tag">Password Security</div></div><div class="partner-desc">The most trusted password manager. Dual-key encryption. Independently audited. Stops credential theft cold.</div><a href="https://1password.com" target="_blank" class="partner-link">Get 1Password →</a></div>
+      <div class="partner-card"><div class="partner-header"><div class="partner-name">DeleteMe</div><div class="partner-tag">Data Removal</div></div><div class="partner-desc">Automatically removes your personal information from 400+ data broker sites every month.</div><a href="https://www.de33watrk.com/MHM39T/KMKS9/" target="_blank" class="partner-link">Get DeleteMe →</a></div>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-newsletter">
+    <div class="blog-wrap">
+      <div class="eyebrow">Weekly Blog</div>
+      <div class="sec-title">Privacy Insights</div>
+      <p style="font-family:'Space Mono',monospace;font-size:.55rem;color:var(--muted);line-height:1.7;margin-bottom:1.2rem">Real threats. Practical fixes. Updated every week.</p>
+
+      <div class="blog-post-card">
+        <div class="blog-post-tag">Threat Alert · Week 1</div>
+        <div class="blog-post-title">How AI Is Quietly Building a Profile on You Right Now</div>
+        <div class="blog-post-excerpt">Every search, every click, every pause — AI is stitching together a detailed profile of who you are.</div>
+        <div class="blog-post-content" id="app-post-1">
+          <p>You do not have to do anything suspicious for AI to build a profile on you. Every interaction — every search, product page, video pause — is a data point being collected and sold.</p>
+          <h4>How it gets built</h4>
+          <p>Data brokers scrape your name, address, relatives, social media and court records. AI then predicts your income, health, politics and purchase intent from your behaviour.</p>
+          <h4>What to do now</h4>
+          <ul>
+            <li>Search your name on Google — that is your public profile</li>
+            <li>Use DeleteMe to request removal from data broker databases</li>
+            <li>Use NordVPN to stop your ISP selling your browsing history</li>
+            <li>Switch to ProtonMail so emails are not scanned for targeting</li>
+          </ul>
+        </div>
+        <button class="blog-read-btn" onclick="toggleAppPost('1')">READ MORE →</button>
+      </div>
+
+      <div class="blog-post-card">
+        <div class="blog-post-tag">How-To · Week 2</div>
+        <div class="blog-post-title">5 Settings on Your Phone Leaking Your Location Right Now</div>
+        <div class="blog-post-excerpt">Your phone broadcasts your location to dozens of apps even when GPS is off. Here is how to stop it.</div>
+        <div class="blog-post-content" id="app-post-2">
+          <p>Turning off GPS does not stop tracking. Your phone triangulates position using WiFi, Bluetooth, cell towers and barometric pressure. Fix these five settings today.</p>
+          <h4>The 5 settings</h4>
+          <ul>
+            <li>App location permissions — set all non-essential apps to Never</li>
+            <li>WiFi scanning — disable in Location settings even when WiFi is off</li>
+            <li>Bluetooth scanning — disable in Location settings</li>
+            <li>Google Location History / Apple Significant Locations — turn off and delete history</li>
+            <li>Ad ID — delete your Advertising ID on Android, disable tracking on iPhone</li>
+          </ul>
+        </div>
+        <button class="blog-read-btn" onclick="toggleAppPost('2')">READ MORE →</button>
+      </div>
+
+      <div class="blog-post-card">
+        <div class="blog-post-tag">Deep Dive · Week 3</div>
+        <div class="blog-post-title">Facial Recognition Is in More Places Than You Think</div>
+        <div class="blog-post-excerpt">Supermarkets, stadiums, schools. It is being deployed faster than any regulation can keep up.</div>
+        <div class="blog-post-content" id="app-post-3">
+          <p>Before you pick up a basket in some supermarkets, a camera has already matched your face against a database. Here is where facial recognition is deployed and how to make yourself harder to identify.</p>
+          <h4>Where it is right now</h4>
+          <ul>
+            <li>Major retail chains and supermarkets</li>
+            <li>Sports stadiums and music venues</li>
+            <li>Airports and border crossings</li>
+            <li>Police departments in 30+ US states</li>
+            <li>Some schools and university campuses</li>
+          </ul>
+          <h4>What you can do</h4>
+          <p>IR-blocking glasses like Reflectacles disrupt the infrared sensors most facial recognition cameras rely on while looking completely normal. The goal is not invisibility — it is raising the cost of surveillance high enough that you become not worth the effort.</p>
+        </div>
+        <button class="blog-read-btn" onclick="toggleAppPost('3')">READ MORE →</button>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="screen" id="screen-more">
+    <div class="more-wrap">
+      <div class="eyebrow">About</div>
+      <div class="sec-title">About beatingai</div>
+      <div class="about-block"><div class="about-block-title">🎯 Our Mission</div><div class="about-block-text">beatingai exists to give ordinary people the knowledge, tools, and products to take back control of their digital life from AI surveillance. No scare tactics. No jargon. Just real solutions.</div></div>
+      <div class="about-block"><div class="about-block-title">🔒 Our Promise</div><div class="about-block-text">We never sell your data. We never share it with AI companies. We only recommend products we genuinely believe in. We practice what we preach.</div></div>
+      <div class="about-block"><div class="about-block-title">📬 Contact Us</div><div class="about-block-text"><a href="#" class="eml" data-u="privacy" data-d="beatingai.net"><span class="__cf_email__" data-cfemail="20505249564143596042454154494e4741490e4e4554">[email&#160;protected]</span></a>. CCPA fully honoured.</div></div></div>
+      <div class="legal-panel" id="lt"><div class="legal-highlight"><p>Short version: Use this app lawfully. Do not resell our digital products. We stand behind everything we sell.</p></div><div class="legal-item"><div class="legal-num">01</div><div class="legal-h">Acceptable Use</div><div class="legal-b">Use beatingai only for lawful purposes. Do not reproduce or resell our digital products without written permission.</div></div></div>
+      <div class="legal-panel" id="la"><div class="legal-highlight"><p>Short version: Some partner links may earn us a referral. This costs you nothing. We only recommend tools we trust.</p></div><div class="legal-item"><div class="legal-num">01</div><div class="legal-h">Partner Relationships</div><div class="legal-b">We participate in referral programs with NordVPN, Proton, 1Password, and DeleteMe. Commercial relationships never influence our recommendations.</div></div></div>
+      <div class="legal-panel" id="lr"><div class="legal-highlight"><p>Short version: 30-day returns on physical products. 14-day guarantee on digital downloads. No hassle.</p></div><div class="legal-item"><div class="legal-num">01</div><div class="legal-h">Physical Products</div><div class="legal-b">All products are through affiliate partners. For returns contact the partner directly. Email <a href="#" class="eml" data-u="privacy" data-d="beatingai.net"><span class="__cf_email__" data-cfemail="40303229362123390022252134292e2721296e2e2534">[email&#160;protected]</span></a> if you need help.</div></div><div class="legal-item"><div class="legal-num">02</div><div class="legal-h">Digital Products</div><div class="legal-b">14-day satisfaction guarantee. Full refund — no questions asked.</div></div></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="bottomnav">
+  <button class="nav-item active" id="nav-home" onclick="switchTab('home')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</button>
+  <button class="nav-item" id="nav-shop" onclick="switchTab('shop')"><svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.98 1.61h9.72a2 2 0 001.98-1.61L23 6H6"/></svg>Shop</button>
+  <button class="nav-item" id="nav-engage" onclick="switchTab('engage')"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>My Score<div class="nav-dot"></div></button>
+  <button class="nav-item" id="nav-partners" onclick="switchTab('partners')"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Partners</button>
+  <button class="nav-item" id="nav-more" onclick="switchTab('more')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>More</button>
+</div>
+
+
+
+<div class="toast" id="toast"></div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script>
+'use strict';
+
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js').catch(function(){});});}
+
+var deferredPrompt;
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;document.getElementById('installBanner').style.display='flex';});
+document.getElementById('installBtn').addEventListener('click',function(){if(!deferredPrompt)return;deferredPrompt.prompt();deferredPrompt.userChoice.then(function(){deferredPrompt=null;document.getElementById('installBanner').style.display='none';});});
+
+var LS={
+  get:function(key,fallback){try{var v=localStorage.getItem('bai_'+key);return v!==null?JSON.parse(v):fallback;}catch(e){return fallback;}},
+  set:function(key,val){try{localStorage.setItem('bai_'+key,JSON.stringify(val));}catch(e){}}
+};
+
+var count=LS.get('ai_profiles_count',2847293041);
+var lastTime=LS.get('ai_profiles_last_time',Date.now());
+var timeDiff=Date.now()-lastTime;
+if(timeDiff>1800){var intervalsMissed=Math.floor(timeDiff/1800);count+=intervalsMissed*500;}
+document.getElementById('threatCounter').textContent=count.toLocaleString();
+setInterval(function(){count+=Math.floor(Math.random()*847+200);document.getElementById('threatCounter').textContent=count.toLocaleString();LS.set('ai_profiles_count',count);LS.set('ai_profiles_last_time',Date.now());},1800);
+
+var DAILY_THREATS=[
+  {name:'Meta Trained AI on Your Private Photos',text:'Meta used photos shared privately on Facebook and Instagram to train its AI models without explicit user consent.',source:'SOURCE: REUTERS - THREAT LEVEL: HIGH'},
+  {name:'Google Paid $93M for Secret Location Tracking',text:'Google tracked users location data even after they explicitly turned it off — using WiFi and IP addresses without permission.',source:'SOURCE: FTC - THREAT LEVEL: CRITICAL'},
+  {name:'Amazon Ring Shared Doorbell Footage With Police',text:'Amazon shared footage from customers home cameras with law enforcement without a warrant or owner notification.',source:'SOURCE: US SENATE - THREAT LEVEL: HIGH'},
+  {name:'Clearview AI Scraped 30 Billion Faces',text:'Clearview built the largest facial recognition database using photos scraped from social media without consent.',source:'SOURCE: WIRED - THREAT LEVEL: CRITICAL'},
+  {name:'OpenAI Sued for Training on Private Data',text:'OpenAI used Reddit posts, personal blogs, books, and code scraped from the internet without the consent of creators.',source:'SOURCE: AP NEWS - THREAT LEVEL: HIGH'},
+  {name:'87% of Free Apps Sell Your Data',text:'Research found that 87% of free apps send user data including location, contacts, and browsing history to third parties.',source:'SOURCE: NYT - THREAT LEVEL: HIGH'},
+  {name:'TikTok Collected Biometric Data Without Consent',text:'TikTok collected faceprints and voiceprints from millions of users without asking permission, violating biometric privacy laws.',source:'SOURCE: BUZZFEED NEWS - THREAT LEVEL: CRITICAL'},
+  {name:'Spotify Tracks Your Emotional State',text:'Spotify filed patents to analyse users voice to detect emotional state, age, gender, and environment — then sell that to advertisers.',source:'SOURCE: VICE - THREAT LEVEL: HIGH'},
+  {name:'LinkedIn Used Your Data to Train AI',text:'LinkedIn automatically opted users into a programme using personal posts, messages, and profiles to train AI without notification.',source:'SOURCE: 404 MEDIA - THREAT LEVEL: HIGH'},
+  {name:'Smart TVs Record Everything You Watch',text:'Major smart TV brands send detailed viewing data to advertisers — including what you watch on other devices in your home.',source:'SOURCE: PRINCETON - THREAT LEVEL: MEDIUM'},
+  {name:'Google Photos Analysed Private Images',text:'Google used photos stored in private accounts to train image recognition AI — photos users believed were private and secure.',source:'SOURCE: THE GUARDIAN - THREAT LEVEL: HIGH'},
+  {name:'Alexa Kept Voice Recordings Forever',text:'Amazon kept Alexa voice recordings indefinitely and allowed human reviewers to listen to random recordings.',source:'SOURCE: BLOOMBERG - THREAT LEVEL: HIGH'},
+  {name:'X Sells Your Posts to AI Companies',text:'X updated its terms to allow AI companies to purchase access to the entire archive of user tweets for AI training.',source:'SOURCE: WIRED - THREAT LEVEL: HIGH'},
+  {name:'Dating Apps Sell Intimate Personal Data',text:'Popular dating apps were found selling users intimate personal data including HIV status, sexuality, and precise location.',source:'SOURCE: NCC - THREAT LEVEL: CRITICAL'},
+  {name:'Period Tracking Apps Share Health Data',text:'Multiple period tracking apps were found sharing cycle data with Facebook, employers, and insurance companies without consent.',source:'SOURCE: POLITICO - THREAT LEVEL: CRITICAL'},
+  {name:'Chrome Extensions Steal Browsing History',text:'Millions of Chrome extensions were silently recording complete browsing history and selling it to data brokers.',source:'SOURCE: DATASPII REPORT - THREAT LEVEL: HIGH'},
+  {name:'AI Predicted Users Medical Conditions',text:'Insurance companies used AI to predict medical conditions from shopping patterns without users knowledge or consent.',source:'SOURCE: WSJ - THREAT LEVEL: CRITICAL'},
+  {name:'Zoom Trained AI on Your Calls',text:'Zoom updated its terms to allow it to use meeting content including audio, video, and chat to train its AI models.',source:'SOURCE: ZOOM TOS - THREAT LEVEL: HIGH'},
+  {name:'Apple Siri Sent Private Conversations to Advertisers',text:'Apple contractors confirmed they heard confidential medical conversations and intimate moments captured by accidental Siri activations.',source:'SOURCE: THE GUARDIAN - THREAT LEVEL: HIGH'},
+  {name:'Data Brokers Know Your Net Worth',text:'Data brokers now hold and sell over 75,000 data points per person including estimated net worth and mental health history.',source:'SOURCE: FTC REPORT - THREAT LEVEL: HIGH'},
+  {name:'Public WiFi Harvests Your Data',text:'Most free public WiFi networks including at airports, hotels, and cafes actively monitor and log user traffic and app usage.',source:'SOURCE: KASPERSKY - THREAT LEVEL: MEDIUM'},
+  {name:'AI Deepfakes Used in Financial Fraud',text:'Fraudsters used AI-generated deepfake videos and voice clones to impersonate executives and steal millions from companies.',source:'SOURCE: SCMP - THREAT LEVEL: CRITICAL'},
+  {name:'Car Manufacturers Sell Your Driving Data',text:'Major car manufacturers sold detailed driving behaviour data including braking, speed, and location to insurance companies.',source:'SOURCE: NYT - THREAT LEVEL: HIGH'},
+  {name:'Microsoft Trained AI on Private Documents',text:'Microsoft AI was found to have been trained on documents stored in private enterprise accounts without clear authorisation.',source:'SOURCE: THE REGISTER - THREAT LEVEL: HIGH'},
+  {name:'72% of Kids Apps Send Data Illegally',text:'Researchers found 72% of apps designed for children transmitted personal data to advertising networks illegally.',source:'SOURCE: INTERNATIONAL JOURNAL - THREAT LEVEL: CRITICAL'},
+  {name:'Fitness Trackers Share Data With Employers',text:'Multiple employers accessed detailed fitness tracker data including sleep patterns and heart rate through wellness programmes.',source:'SOURCE: THE VERGE - THREAT LEVEL: HIGH'},
+  {name:'AI Identifies You From Typing Patterns',text:'Researchers demonstrated AI can identify individuals from their unique keyboard typing rhythm alone without seeing what is typed.',source:'SOURCE: USENIX SECURITY - THREAT LEVEL: MEDIUM'},
+  {name:'Snapchat AI Stored Conversations Indefinitely',text:'Snapchat built-in AI chatbot was found storing conversation histories indefinitely and making them accessible to employees.',source:'SOURCE: CONSUMER REPORTS - THREAT LEVEL: HIGH'},
+  {name:'Hotel TVs Tracked Guests Through the Night',text:'Hotel room smart TVs monitored guest viewing and device activity and sent data to marketing companies overnight.',source:'SOURCE: DEFCON - THREAT LEVEL: MEDIUM'},
+  {name:'AI Voice Cloning Used to Scam Families',text:'Fraudsters cloned the voices of family members to create fake emergency calls asking for money — affecting thousands of victims.',source:'SOURCE: FTC - THREAT LEVEL: CRITICAL'}
+];
+
+var WEEKLY_CHALLENGES=[
+  {title:'Delete Your Google Location History',desc:'Google tracks everywhere you go. Delete your location history and turn it off permanently this week.',steps:['Open Google Maps, tap your profile photo, then Your data in Maps','Tap Delete all Location History and confirm the deletion','Go to myaccount.google.com, find Location History under Data and Privacy, turn it OFF']},
+  {title:'Switch Browser to Firefox or Brave',desc:'Chrome reports your browsing to Google. Switch to a privacy-first browser this week.',steps:['Download Firefox or Brave from your app store for free','Go to your phone Settings, then Default Apps, then Browser App','Select Firefox or Brave as your new default browser']},
+  {title:'Audit Every App Permission on Your Phone',desc:'Apps quietly access your camera, microphone, and location. Revoke what they do not need.',steps:['Go to phone Settings then Apps and select each app individually','Review Permissions — revoke Location, Camera, and Microphone from apps that do not need them','Delete any apps you have not opened in the last 3 months']},
+  {title:'Set Up Two-Factor Authentication',desc:'A password alone is not enough. 2FA stops 99% of account takeovers immediately.',steps:['Download Google Authenticator or Authy from the app store','Go to your most important accounts — email, bank, and social media','Enable 2FA in each account Security settings and scan the QR code']},
+  {title:'Opt Out of Data Broker Sites',desc:'Data brokers sell your name, address, and phone number to anyone willing to pay. Start removing yourself this week.',steps:['Visit optout.people.com and submit a removal request for your listing','Go to spokeo.com/optout and remove your listing from their database','Visit whitepages.com/suppression_request and opt out — repeat this every month']},
+  {title:'Switch to DuckDuckGo Search',desc:'Google logs every search and builds a profile from it. DuckDuckGo logs absolutely nothing.',steps:['Download the DuckDuckGo browser app from your app store','In Settings, find Search Engine, and select DuckDuckGo','Use it for one full week — notice how ads stop following you around']},
+  {title:'Lock Down Your Facebook Privacy',desc:'Facebook shares more of your data than most people realise. Lock it down completely this week.',steps:['Go to Facebook Settings, then Privacy, and check who can see your posts and profile','Go to Settings then Ads then Ad Preferences and turn off all personalised ads','Go to Settings, Your Facebook Information, Off-Facebook Activity, and clear and turn it off']},
+  {title:'Stop Reusing Passwords',desc:'Reusing passwords is the number one cause of account takeovers. Your phone already has a free built-in password manager — use it.',steps:['On iPhone go to Settings then Passwords — on Android go to Settings then Google then Autofill','For your 3 most important accounts — email, bank, social media — tap Change Password and let your phone generate a strong unique one','Enable Autofill Passwords in your phone settings so it fills in automatically every time']},
+  {title:'Remove Yourself From Google Search Results',desc:'Your personal information shows up in Google results. Request removal this week.',steps:['Go to google.com and search for how to remove content from Google Search','Submit a removal request for any results showing your address, phone, or personal ID','Go to myactivity.google.com and delete your entire Google search history']},
+  {title:'Secure Your Home WiFi Network',desc:'Your WiFi router is the front door to everything in your home. Make sure it is locked properly.',steps:['Log into your router admin panel — usually at 192.168.1.1, password is on the back label','Change the default admin username and password to something strong and unique','Enable WPA3 encryption if your router supports it — or WPA2 at minimum — and disable WPS']},
+  {title:'Lock Down Your Email Account',desc:'Your email is the master key to your entire life. Most people have almost no security on it.',steps:['Enable two-factor authentication on your email account if you have not already done so','Go to your email security settings and review all apps and devices that have access — remove any you do not recognise','Check if your email has been in a data breach at haveibeenpwned.com — it is free and takes 10 seconds']},
+  {title:'Freeze Your Credit at All Three Bureaus',desc:'A credit freeze stops anyone from opening accounts in your name including identity thieves using AI-stolen data.',steps:['Go to equifax.com, experian.com, and transunion.com and create accounts on each','Navigate to Credit Freeze in each account and enable the freeze','This is completely free and you can unfreeze anytime — do it on all three bureaus']}
+];
+
+function getTodayThreatIndex(){
+  var now=new Date();
+  var start=new Date(now.getFullYear(),0,0);
+  var dayOfYear=Math.floor((now-start)/(1000*60*60*24));
+  return dayOfYear%DAILY_THREATS.length;
+}
+
+function getThisWeekChallenge(){
+  var now=new Date();
+  var startOfYear=new Date(now.getFullYear(),0,1);
+  var weekNum=Math.floor((now-startOfYear)/(7*24*60*60*1000));
+  return WEEKLY_CHALLENGES[weekNum%WEEKLY_CHALLENGES.length];
+}
+
+var threatIdx=getTodayThreatIndex();
+
+function renderThreat(){
+  var t=DAILY_THREATS[threatIdx];
+  document.getElementById('dtName').textContent=t.name;
+  document.getElementById('dtText').textContent=t.text;
+  document.getElementById('dtSource').textContent=t.source;
+  var now=new Date();
+  document.getElementById('dtDate').textContent=now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}).toUpperCase();
+}
+function nextThreat(){threatIdx=(threatIdx+1)%DAILY_THREATS.length;renderThreat();}
+function prevThreat(){threatIdx=(threatIdx-1+DAILY_THREATS.length)%DAILY_THREATS.length;renderThreat();}
+
+var CHK='<svg width="9" height="9" viewBox="0 0 9 9" fill="none"><polyline points="1.5,4.5 3.5,7 7.5,2" stroke="#060608" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+function getWeekNumber(){
+  var now=new Date();
+  var startOfYear=new Date(now.getFullYear(),0,1);
+  return Math.floor((now-startOfYear)/(7*24*60*60*1000));
+}
+
+function renderChallengeUI(){
+  var challenge=getThisWeekChallenge();
+  var now=new Date();
+  var weekStr='WEEK OF '+now.toLocaleDateString('en-US',{month:'short',day:'numeric'}).toUpperCase();
+
+  // Week rollover check — reset steps if it's a new week
+  var currentWeek=getWeekNumber();
+  var savedWeek=LS.get('ch_week_num',-1);
+  if(savedWeek !== currentWeek){
+    LS.set('ch_steps',[false,false,false]);
+    LS.set('ch_completed',false);
+    LS.set('ch_week_num',currentWeek);
+  }
+
+  var steps=LS.get('ch_steps',[false,false,false]);
+  var streak=LS.get('streak',0);
+  var completed=LS.get('ch_completed',false);
+
+  ['chTitleHome','chTitleEngage'].forEach(function(id){document.getElementById(id).textContent=challenge.title;});
+  ['chDescHome','chDescEngage'].forEach(function(id){document.getElementById(id).textContent=challenge.desc;});
+  ['challengeWeekHome','challengeWeekEngage'].forEach(function(id){document.getElementById(id).textContent=weekStr;});
+  ['streakHome','streakEngage'].forEach(function(id){document.getElementById(id).textContent=streak;});
+
+  buildSteps('chStepsHome','home',steps,challenge);
+  buildSteps('chStepsEngage','eng',steps,challenge);
+  updateProgress(steps,'chProgressFillHome','chProgressTextHome','chCompleteBtnHome',completed);
+  updateProgress(steps,'chProgressFillEngage','chProgressTextEngage','chCompleteBtnEngage',completed);
+
+  if(completed){
+    ['chCompleteBtnHome','chCompleteBtnEngage'].forEach(function(id){
+      var btn=document.getElementById(id);
+      btn.textContent='CHALLENGE COMPLETED THIS WEEK!';
+      btn.disabled=true;
+      btn.style.background='rgba(0,232,122,.15)';
+      btn.style.color='var(--green)';
+    });
+  }
+  renderPastChallenges();
+}
+
+function buildSteps(containerId,prefix,steps,challenge){
+  var el=document.getElementById(containerId);
+  el.innerHTML=challenge.steps.map(function(s,i){
+    return '<div class="ch-step'+(steps[i]?' done':'')+'" id="'+prefix+i+'" onclick="toggleStep(\''+prefix+'\','+i+')">'
+      +'<div class="ch-check" id="'+prefix+'chk'+i+'">'+(steps[i]?CHK:'')+'</div>'
+      +'<div class="ch-step-text">'+s+'</div>'
+      +'</div>';
+  }).join('');
+}
+
+function updateProgress(steps,fillId,textId,btnId,completed){
+  var done=steps.filter(Boolean).length;
+  document.getElementById(fillId).style.width=(done/3*100)+'%';
+  document.getElementById(textId).textContent=done+' of 3 steps';
+  if(!completed)document.getElementById(btnId).disabled=done<3;
+}
+
+function toggleStep(prefix,idx){
+  var steps=LS.get('ch_steps',[false,false,false]);
+  steps[idx]=!steps[idx];
+  LS.set('ch_steps',steps);
+  var el=document.getElementById(prefix+idx);
+  el.classList.toggle('done',steps[idx]);
+  document.getElementById(prefix+'chk'+idx).innerHTML=steps[idx]?CHK:'';
+  var other=prefix==='home'?'eng':'home';
+  var otherEl=document.getElementById(other+idx);
+  if(otherEl){otherEl.classList.toggle('done',steps[idx]);document.getElementById(other+'chk'+idx).innerHTML=steps[idx]?CHK:'';}
+  var completed=LS.get('ch_completed',false);
+  updateProgress(steps,'chProgressFillHome','chProgressTextHome','chCompleteBtnHome',completed);
+  updateProgress(steps,'chProgressFillEngage','chProgressTextEngage','chCompleteBtnEngage',completed);
+}
+
+function completeChallenge(){
+  LS.set('ch_completed',true);
+  var streak=LS.get('streak',0)+1;
+  LS.set('streak',streak);
+  var challenge=getThisWeekChallenge();
+  var challengeTitle=(challenge&&challenge.title)?challenge.title:document.getElementById('chTitleHome').textContent;
+  if(!challengeTitle||challengeTitle==='undefined')challengeTitle='Weekly Privacy Challenge';
+  var past=LS.get('past_challenges',[]);
+  past.unshift({title:challengeTitle,date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),pts:15});
+  LS.set('past_challenges',past);
+  ['streakHome','streakEngage'].forEach(function(id){
+    var el=document.getElementById(id);
+    el.textContent=streak;
+    el.classList.add('pop');
+    setTimeout(function(){el.classList.remove('pop');},400);
+  });
+  ['chCompleteBtnHome','chCompleteBtnEngage'].forEach(function(id){
+    var btn=document.getElementById(id);
+    btn.textContent='CHALLENGE COMPLETED THIS WEEK!';
+    btn.disabled=true;
+    btn.style.background='rgba(0,232,122,.15)';
+    btn.style.color='var(--green)';
+  });
+  var bonus=LS.get('score_bonus',0)+15;
+  LS.set('score_bonus',bonus);
+  updateScoreUI();
+  renderPastChallenges();
+  showToast('Challenge complete! +15 points added');
+}
+
+function renderPastChallenges(){
+  var past=LS.get('past_challenges',[]);
+  var wrap=document.getElementById('pastChallengesWrap');
+  if(!past.length){
+    wrap.innerHTML='<div class="past-item" style="opacity:.4"><div class="past-check">square</div><div class="past-info"><div class="past-title">No completed challenges yet</div><div class="past-date">Complete your first challenge above</div></div><div class="past-pts" style="color:#444">+0 pts</div></div>';
+    return;
+  }
+  wrap.innerHTML=past.map(function(p){
+    return '<div class="past-item"><div class="past-check">done</div><div class="past-info"><div class="past-title">'+p.title+'</div><div class="past-date">Completed '+p.date+'</div></div><div class="past-pts">+'+p.pts+' pts</div></div>';
+  }).join('');
+}
+
+var scorePoints=[15,15,10,15,10,10];
+
+function calcScore(){
+  var toggles=LS.get('score_toggles',[false,false,false,false,false,false]);
+  var bonus=LS.get('score_bonus',0);
+  return Math.min(100,25+toggles.reduce(function(a,v,i){return v?a+scorePoints[i]:a;},0)+bonus);
+}
+
+function updateScoreUI(){
+  var s=calcScore();
+  var offset=226-(226*(s/100));
+  var grade,col,sub;
+  if(s<30){grade='AT RISK';col='#ff3c3c';sub='You need immediate action — start with the challenges';}
+  else if(s<50){grade='VULNERABLE';col='#ff9500';sub='Good start — keep completing weekly challenges';}
+  else if(s<70){grade='IMPROVING';col='#00e87a';sub='You are making real progress — keep going';}
+  else if(s<90){grade='PROTECTED';col='#00e87a';sub='Strong privacy posture — almost there';}
+  else{grade='SHIELD STATUS';col='#00e87a';sub='Maximum privacy achieved — invisible to AI';}
+  ['Home','Engage'].forEach(function(suffix){
+    var n=document.getElementById('scoreNum'+suffix);
+    var r=document.getElementById('scoreRing'+suffix);
+    var g=document.getElementById('scoreGrade'+suffix);
+    var gs=document.getElementById('scoreGradeSub'+suffix);
+    if(n)n.textContent=s;
+    if(r)r.style.strokeDashoffset=offset;
+    if(g){g.textContent=grade;g.style.color=col;}
+    if(gs)gs.textContent=sub;
+  });
+  var toggles=LS.get('score_toggles',[false,false,false,false,false,false]);
+  var vpn=toggles[0],em=toggles[1],pw=toggles[2],tfa=toggles[3],loc=toggles[4],br=toggles[5];
+  var b1=Math.min(100,20+(vpn?25:0)+(tfa?15:0));
+  var b2=Math.min(100,30+(em?20:0)+(pw?10:0));
+  var b3=Math.min(100,15+(loc?20:0)+(br?25:0));
+  var b4=Math.min(100,35+(em?15:0)+(vpn?15:0));
+  [[b1,'bar1','bv1'],[b2,'bar2','bv2'],[b3,'bar3','bv3'],[b4,'bar4','bv4']].forEach(function(arr){
+    var bar=document.getElementById(arr[1]);var val=document.getElementById(arr[2]);
+    if(bar){bar.style.width=arr[0]+'%';bar.style.background=arr[0]>=60?'#00e87a':arr[0]>=35?'#ff9500':'#ff3c3c';}
+    if(val)val.textContent=arr[0];
+  });
+}
+function toggleScore(idx,pts){
+  var toggles=LS.get('score_toggles',[false,false,false,false,false,false]);
+  toggles[idx]=!toggles[idx];
+  LS.set('score_toggles',toggles);
+  document.getElementById('tog'+idx).classList.toggle('on',toggles[idx]);
+  updateScoreUI();
+  showToast(toggles[idx]?'+'+pts+' points added!':'Points removed');
+}
+function loadToggleStates(){
+  var toggles=LS.get('score_toggles',[false,false,false,false,false,false]);
+  toggles.forEach(function(v,i){document.getElementById('tog'+i).classList.toggle('on',v);});
+}
+function showToast(msg){
+  var t=document.getElementById('toast');
+  if(!t)return;
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2200);
+}
+function switchTab(tab){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});
+  document.getElementById('screen-'+tab).classList.add('active');
+  document.getElementById('nav-'+tab).classList.add('active');
+  document.getElementById('main').scrollTo(0,0);
+}
+function switchLegal(id,btn){
+  document.querySelectorAll('.legal-tab').forEach(function(t){t.classList.remove('active');});
+  document.querySelectorAll('.legal-panel').forEach(function(p){p.classList.remove('active');});
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+function toggleAppPost(id){
+  var c=document.getElementById('app-post-'+id);
+  if(c) c.style.display=c.style.display==='none'?'block':'none';
+}
+
+renderThreat();
+renderChallengeUI();
+loadToggleStates();
+updateScoreUI();
+</script>
+<script>
+document.querySelectorAll('a.eml').forEach(function(a){
+  var e=a.dataset.u+'@'+a.dataset.d;
+  a.href='mailto:'+e;
+  a.textContent=e;
+});
+</script>
+</body>
+</html>
